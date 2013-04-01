@@ -11,10 +11,11 @@
 			<label for="username">Username</label>
 			<label for="password" style="margin-left:85px;">Password</label>
 			<br>
-			<input type="text" name="username">
-			<input type="text" name="password">
+			<input type="text" name="user">
+			<input type="text" name="pass">
 		</form>
-		<button id="getResult">process</button>
+		<button id="getResult" style="margin-top:5px;">Login</button>
+		<button id="registration" style="margin-top:5px;margin-left:85px;">Registration</button>
 		<div id="result"></div>
 	</div>
 	<?php //echo phpinfo(); ?>
@@ -58,7 +59,21 @@
 		$("body").css('background','white');
 	});
 	$('#getResult').on('click',function(){
-		$.ajax('process.php').done(function(data){
+		console.log($("#loginform").serialize());
+		$.ajax({
+			type: "POST",
+			url: "process.php",
+			data: $("#loginform").serialize()
+		}).done(function(data){
+			$("#result").html(data);
+		});
+	});
+	$('#registration').on('click',function(){
+		$.ajax({
+			type: "POST",
+			url: "registration.php",
+			data: $("#loginform").serialize()
+		}).done(function(data){
 			$("#result").html(data);
 		});
 	});

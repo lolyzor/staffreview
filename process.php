@@ -1,21 +1,26 @@
 <?php 
 if(isset($_POST['user'])){
-	$user = mysql_real_escape_string($_POST['user']);
-	$pass = mysql_real_escape_string($_POST['pass']);
-
+	//$user = mysql_real_escape_string($_POST['user']);
+	//$pass = mysql_real_escape_string($_POST['pass']);
+	$user = preg_replace("/[^a-zA-Z0-9]+/", "", html_entity_decode($_POST['user'], ENT_QUOTES));
+	$pass = preg_replace("/[^a-zA-Z0-9]+/", "", html_entity_decode($_POST['pass'], ENT_QUOTES));
+	login($user,$pass);
 } 
-
-$m = new MongoClient();
-$db = $m->db;
-$test = $db->test;
-//$test->find("{'title':'prd'}");
-$document = ['title'=>'Me and smoto','author'=>'Bill prd'];
-$document2 = ['title'=>'Me and smoto2','author'=>'Bill and smrd'];
-//$test->insert($document2);
-$results = $test->find();
-foreach ($results as $document) {
-		echo $document['title'];
+else{
+	echo 'not user received';
 }
-
-
+function login($user,$pass){
+	$m = new MongoClient();
+	$db = $m->db;
+	$test = $db->test;
+	//$query = array("user"=>array('$eq'=>$user),"pass"=>array('$eq'=>$pass));
+	$query = array('user'=>$user,'pass'=>$pass);
+	$results = $test->find($query);
+	if($results->hasNext()){
+		echo 'success';
+	}
+	else{
+		echo 'failed';
+	}
+}
 ?>
