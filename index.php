@@ -14,7 +14,10 @@
 			<input type="text" name="username">
 			<input type="text" name="password">
 		</form>
+		<button id="getResult">process</button>
+		<div id="result"></div>
 	</div>
+	<?php //echo phpinfo(); ?>
 	</body>
 <script src="js/jquery.js"></script>
 <script>
@@ -53,6 +56,11 @@
 		$(".login").css('top','60%');
 		$(".login").css('left','35%');
 		$("body").css('background','white');
+	});
+	$('#getResult').on('click',function(){
+		$.ajax('process.php').done(function(data){
+			$("#result").html(data);
+		});
 	});
 </script>
 </html>
