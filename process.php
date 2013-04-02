@@ -6,8 +6,12 @@ if(isset($_POST['user'])){
 	$pass = preg_replace("/[^a-zA-Z0-9]+/", "", html_entity_decode($_POST['pass'], ENT_QUOTES));
 	login($user,$pass);
 } 
-else{
-	echo 'not user received';
+if(isset($_POST['startDay'])){
+	//echo 'not user received';
+	$m = new MongoClient();
+	$db = $m->db->test;
+	$query = array('user'=>$user,'date'=>$date);
+	$db->insert($query);
 }
 function login($user,$pass){
 	$m = new MongoClient();

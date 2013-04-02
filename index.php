@@ -83,6 +83,19 @@
 		$("#zapocniPoso").on('submit',function(){
 			return false;
 		});
+		$("#kreni").on('click',function(){
+			//console.log();
+			var date = $.datepicker.formatDate('yy mm dd',new Date());
+			console.log(date);
+			return false;
+			$.ajax({
+				url:'process.php',
+				data:'action=startDay&date='+date,
+				type:'POST'
+			}).done(function(data){
+				console.log(data);
+			});
+		});
 
 
 	}
@@ -93,8 +106,8 @@
 	$(function(){
 		skipLogin();
 		console.log('ready');
-		console.log($(window).width());
-		console.log($(document).width());
+		//console.log($(window).width());
+		//console.log($(document).width());
 		//$(".h1login").center();
 		$("#loginimage").css('position','fixed');
 		$("#loginimage").css('top','20%');
@@ -103,7 +116,7 @@
 		$(".login").css('position','fixed');
 		$(".login").css('top','60%');
 		$(".login").css('left','35%');
-		$("body").css('background','white');		
+		$("body").css('background','black');		
 	});
 	$('#getResult').on('click',function(){
 		console.log($("#loginform").serialize());
