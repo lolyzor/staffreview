@@ -30,6 +30,7 @@
 			</ul>
 			<div id="tabs-1">
 			<p id="date">Danas je &nbsp</p>
+			<p id="proveo">Sati na poslu: &nbsp</p>
 			<form id="zapocniPoso">
 				<button id="kreni">Pocni dan</button>
 				<button id="stani">Kraj</button>
@@ -73,13 +74,20 @@
 	});
 	function skipLogin(){
 		$("#loginpage").toggle(false);
+		$("#proveo").toggle(false);
 		//$("#workerpage").toggle(false);
 		$("#workerpage").tabs();
-		var today = new Date();
-		$("#date").append(today);
+		document.title = 'Home'
+		//$("#date").append(day+hours+minutes);
+		$("#date").append($.datepicker.formatDate('dd M yy', new Date()));
 		$("#zapocniPoso").on('submit',function(){
 			return false;
 		});
+
+
+	}
+	function brojiVrijeme(){
+		//mafaka broji ga, udri mujoo hohohooh
 
 	}
 	$(function(){
