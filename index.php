@@ -86,11 +86,11 @@
 		$("#kreni").on('click',function(){
 			//console.log();
 			var date = $.datepicker.formatDate('yy mm dd',new Date());
-			console.log(date);
-			return false;
+			$.user = 'lol';
+			//return false;
 			$.ajax({
 				url:'process.php',
-				data:'action=startDay&date='+date,
+				data:'action=startDay&date='+date+'&user='$.user,
 				type:'POST'
 			}).done(function(data){
 				console.log(data);
@@ -123,7 +123,7 @@
 		$.ajax({
 			type: "POST",
 			url: "process.php",
-			data: $("#loginform").serialize()
+			data: $("#loginform").serialize()+'&action=login'
 		}).done(function(data){
 			$("#result").html(data);
 			$("#loginpage").toggle();
