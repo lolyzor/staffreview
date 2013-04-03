@@ -85,15 +85,17 @@
 		});
 		$("#kreni").on('click',function(){
 			//console.log();
-			var date = $.datepicker.formatDate('yy mm dd',new Date());
+			//var date = $.datepicker.formatDate('yy mm dd',new Date());
 			$.user = 'lol';
 			//return false;
 			$.ajax({
 				url:'process.php',
-				data:'action=startDay&date='+date+'&user='$.user,
+				data:'action=startDay&user='+$.user,
 				type:'POST'
 			}).done(function(data){
-				console.log(data);
+				$("#proveo").toggle(true);
+				$("#proveo").val('Na poslu vec: '+data.vrijeme);
+				console.log(data.status);
 			});
 		});
 
