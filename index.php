@@ -33,7 +33,7 @@
 			<p id="proveo">Sati na poslu: &nbsp</p>
 			<form id="zapocniPoso">
 				<button id="kreni">Pocni dan</button>
-				<button id="stani">Kraj</button>
+				<button id="stani">Zavrsi dan</button>
 			</form>
 			</div>
 			<div id="tabs-2">
@@ -59,7 +59,7 @@
 	    return this;
 	}
 	function reposition(){
-		console.log('repositioning');
+		//console.log('repositioning');
 		$("#loginimage").css('position','fixed');
 		$("#loginimage").css('top','20%');
 		$("#loginimage").css('left','40%');
@@ -67,14 +67,27 @@
 		$(".login").css('position','fixed');
 		$(".login").css('top','60%');
 		$(".login").css('left','35%');
-		$("body").css('background','white');
+		$("body").css('background','black');
 	}
 	$(window).resize(function(){
 		reposition();
 	});
+	$("#proveo").click(function(){		
+		$.ajax({
+			url:'process.php',
+			data:'action=checkHours&user='+$.user,
+			type: 'POST',
+			dataType: "json"
+		}).done(function(data){
+			console.log(data);
+			//console.log(data.vrijeme);
+			if(data.vrijeme)
+				$("#proveo").val('Na poslu vec: '+data.vrijeme);
+		});
+	});
 	function skipLogin(){
 		$("#loginpage").toggle(false);
-		$("#proveo").toggle(false);
+		$("#proveo").toggle(true);
 		//$("#workerpage").toggle(false);
 		$("#workerpage").tabs();
 		document.title = 'Home'
@@ -84,6 +97,7 @@
 			return false;
 		});
 		$("#kreni").on('click',function(){
+			//return false;
 			//console.log();
 			//var date = $.datepicker.formatDate('yy mm dd',new Date());
 			$.user = 'lol';
@@ -91,8 +105,11 @@
 			$.ajax({
 				url:'process.php',
 				data:'action=startDay&user='+$.user,
-				type:'POST'
+				type:'POST',
+				dataType:'json'
 			}).done(function(data){
+				console.log(data);
+				//return false;
 				$("#proveo").toggle(true);
 				$("#proveo").val('Na poslu vec: '+data.vrijeme);
 				console.log(data.status);
@@ -106,6 +123,7 @@
 
 	}
 	$(function(){
+		$.user='lol';
 		skipLogin();
 		console.log('ready');
 		//console.log($(window).width());
