@@ -73,17 +73,7 @@
 		reposition();
 	});
 	$("#proveo").click(function(){		
-		$.ajax({
-			url:'process.php',
-			data:'action=checkHours&user='+$.user,
-			type: 'POST',
-			dataType: "json"
-		}).done(function(data){
-			console.log(data);
-			//console.log(data.vrijeme);
-			//if(data.vrijeme)
-			$("#proveo").text("Na poslu vec "+data.vrijeme);
-		});
+		provjeri();
 	});
 	function skipLogin(){
 		$("#loginpage").toggle(false);
@@ -95,35 +85,40 @@
 		$("#date").append($.datepicker.formatDate('dd M yy', new Date()));
 		$("#zapocniPoso").on('submit',function(){
 			return false;
+		});		
+	}
+	function provjeri(){
+		//mafaka broji ga, udri mujoo hohohooh
+		$.ajax({
+			url:'process.php',
+			data:'action=checkHours&user='+$.user,
+			type: 'POST',
+			dataType: "json"
+		}).done(function(data){
+			console.log(data);
+			//console.log(data.vrijeme);
+			//if(data.vrijeme)
+			$("#proveo").text("Na poslu vec "+data.vrijeme);
 		});
-		$("#kreni").on('click',function(){
-			//return false;
-			//console.log();
-			//var date = $.datepicker.formatDate('yy mm dd',new Date());
-			$.user = 'lol';
-			//return false;
-			$.ajax({
-				url:'process.php',
-				data:'action=startDay&user='+$.user,
-				type:'POST',
-				dataType:'json'
-			}).done(function(data){
-				console.log(data);
-				//return false;
-				$("#proveo").toggle(true);
-				$("#proveo").val('Na poslu vec: '+data.vrijeme);
-				console.log(data.status);
-			});
-		});
-
 
 	}
-	function brojiVrijeme(){
-		//mafaka broji ga, udri mujoo hohohooh
-
+	function checkIfDayStarted(){
+		$.ajax({
+			url:'process.php',
+			data:'action=checkIfDayStarted&user='+$.user,
+			type:'POST',
+			dataType:'json'
+		}).done(function(data){
+			console.log(data);
+			if(data.logged == 'true'){
+				$("#kreni").attr('disabled','disabled');
+				provjeri();
+			}
+		});
 	}
 	$(function(){
 		$.user='lol';
+		checkIfDayStarted();
 		skipLogin();
 		console.log('ready');
 		//console.log($(window).width());
@@ -160,5 +155,24 @@
 			$("#result").html(data);
 		});
 	});
+	$("#kreni").on('click',function(){
+			//return false;
+			//console.log();
+			//var date = $.datepicker.formatDate('yy mm dd',new Date());
+			$.user = 'lol';
+			//return false;
+			$.ajax({
+				url:'process.php',
+				data:'action=startDay&user='+$.user,
+				type:'POST',
+				dataType:'json'
+			}).done(function(data){
+				console.log(data);
+				//return false;
+				$("#proveo").toggle(true);
+				$("#proveo").val('Na poslu vec: '+data.vrijeme);
+				console.log(data.status);
+			});
+		});
 </script>
 </html>

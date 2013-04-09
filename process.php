@@ -2,9 +2,7 @@
 switch ($_POST['action']) {
 	case 'login':
 		# mafaka login
-		$user = filterOutStuff($_POST['user']);
-		$pass = filterOutStuff($_POST['pass']);
-		login($user,$pass);	
+		login(getUser(),getPass());	
 		break;
 	case 'startDay':
 		startDay();
@@ -12,15 +10,34 @@ switch ($_POST['action']) {
 	case 'checkHours':
 		checkHours();
 		break;
-	//case ''
+	case 'checkIfDayStarted':
+		checkIfDayStarted(getUser());
+		break;
 	default:
 		# code...
 		echo 'bad request bitch';
 		break;
 }
+function getUser(){
+	return filterOutStuff($_POST['user']);
+}
+function getPass(){
+	return filterOutStuff($_POST['pass']);
+}
 function filterOutStuff($var){
 	$var2 = preg_replace("/[^a-zA-Z0-9]+/", "", html_entity_decode($var, ENT_QUOTES));
 	return $var2;
+}
+function checkIfDayStarted($user){
+	$m = new MongoClient();
+	$db = $m->db;
+	$test = $db->test;
+	$results = $test->findOne(buildQuery(getUser()),array('id'));
+	if(count($results)){
+		$output = array('logged'=>'true');
+		echo json_encode($output);
+	}
+
 }
 function login($user,$pass){
 	$m = new MongoClient();
@@ -37,18 +54,8 @@ function login($user,$pass){
 	}
 }
 function startDay(){
-	//echo 'not user received';
-	//$date = explode(" ",$_POST['date']);
-	//create date and time, seperate them so I can compate it later
-	//also split the date into year month and day
-	//format date is the key
-	//when entering date specify the type of it, 'workbegin','workend'
-	//when querying for each day of the month grab begin and end and get the work hours,
-	//afther doing that for every user see who did not fill  the quota !
-	//formating http://www.phpjabbers.com/date-and-time-formatting-with-php-php28.html
-	$user = filterOutStuff($_POST['user']);
+	$user = getUser();
 	$date = explode(' ',getTime());
-	//echo date('l F Y H:i',time());
 	$m = new MongoClient();
 	$db = $m->db->test;
 	$query = buildQuery($user);
@@ -71,9 +78,7 @@ function buildQuery($user){
 }
 
 function checkHours(){
-	$user = filterOutStuff($_POST['user']);
-	//$date = $_POST['startdate'];
-	//$time = $_POST['time'];	
+	$user = getUser();
 	$status = '';
 	$m = new MongoClient();
 	$db = $m->db->test;
@@ -84,26 +89,26 @@ function checkHours(){
 	if($diff->h > 0){
 		$h = $diff->h;
 		if($h == 1)
-			$status .= strval($h).' sat ';
+			$status .= strval($h).' sat';
 		elseif($h <= 4)
-			$status .= strval($h).' sata ';
+			$status .= strval($h).' sata';
 		elseif($h > 4)
-			$status .= strval($h).' sati ';
+			$status .= strval($h).' sati';
 	}
 	if($diff->i > 0){
 		$m = $diff->i;
-		if($m >= 5 && <= 20)
-			$status .= strval($m).' minuta';
+		if($m >= 5 and $m <= 20)
+			$status .= ' i '.strval($m).' minuta...';
 		elseif($m%10 == 1)
-			$status .= strval($m).' minutu';
+			$status .= ' i '.strval($m).' minutu...';
 		elseif($m%10 <= 4)
-			$status .= strval($m).' minute';
-		elseif($m%10 > 4 || $m%10 == 0)
-			$status .= strval($m).' minuta';
+			$status .= ' i '.strval($m).' minute...';
+		elseif($m%10 > 4 or $m%10 == 0)
+			$status .= ' i '.strval($m).' minuta...';
 	}
 	//$output = array('status'=>'ok','vrijeme'=>$then->format('l F Y H:i').' '.$now->format('l F Y H:i'));
 	//$output = array('status'=>'ok','vrijeme'=>strval($diff->h).' '.strval($diff->i).' status '.$status);
-	$output = array('status'=>'ok','vrijeme'=>$status);
+	$output = array('status'=>'ok','vrijeme'=>$status,'fullinfo'=>$then->format('l F Y H:i ').$now->format('l F Y H:i'));
 	echo json_encode($output);
 		
 }
