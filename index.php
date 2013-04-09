@@ -79,14 +79,7 @@
 		$("#loginpage").toggle(false);
 		$("#proveo").toggle(true);
 		//$("#workerpage").toggle(false);
-		$("#workerpage").tabs();
-		document.title = 'Home'
-		//$("#date").append(day+hours+minutes);
-		$("#date").append($.datepicker.formatDate('dd M yy', new Date()));
-		$("#zapocniPoso").on('submit',function(){
-			return false;
-		});		
-	}
+	}		
 	function provjeri(){
 		//mafaka broji ga, udri mujoo hohohooh
 		$.ajax({
@@ -118,8 +111,9 @@
 	}
 	$(function(){
 		$.user='lol';
-		checkIfDayStarted();
-		skipLogin();
+		$("#workerpage").toggle(false);
+		//checkIfDayStarted();
+		//skipLogin();
 		console.log('ready');
 		//console.log($(window).width());
 		//console.log($(document).width());
@@ -140,10 +134,20 @@
 			url: "process.php",
 			data: $("#loginform").serialize()+'&action=login'
 		}).done(function(data){
+			if(data != 'success')
+				return false;
+			$("#workerpage").tabs();
+			document.title = 'Home'
+			//$("#date").append(day+hours+minutes);
+			$("#date").append($.datepicker.formatDate('dd M yy', new Date()));
+			$("#zapocniPoso").on('submit',function(){
+				return false;
+			});	
 			$("#result").html(data);
-			$("#loginpage").toggle();
-			$("#workerpage").toggle();
-			$("#tabs").tabs();
+			$("#loginpage").toggle(false);
+			$("#workerpage").toggle(true);
+			//$("#tabs").tabs();
+			checkIfDayStarted();
 		});
 	});
 	$('#registration').on('click',function(){
@@ -153,6 +157,17 @@
 			data: $("#loginform").serialize()
 		}).done(function(data){
 			$("#result").html(data);
+		});
+	});
+	$("#stani").on('click',function(){
+		//console.log();
+		$.ajax({
+			url:'process.php',
+			data:'action=stopDay&user='+$.user,
+			type:'POST',
+			dataType:'json'
+		}).done(function(data){
+			console.log(data.status);
 		});
 	});
 	$("#kreni").on('click',function(){

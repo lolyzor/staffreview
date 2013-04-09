@@ -13,6 +13,9 @@ switch ($_POST['action']) {
 	case 'checkIfDayStarted':
 		checkIfDayStarted(getUser());
 		break;
+	case 'stopDay':
+		stopDay(getUser());
+		break;
 	default:
 		# code...
 		echo 'bad request bitch';
@@ -27,6 +30,14 @@ function getPass(){
 function filterOutStuff($var){
 	$var2 = preg_replace("/[^a-zA-Z0-9]+/", "", html_entity_decode($var, ENT_QUOTES));
 	return $var2;
+}
+function stopDay($user){
+	$m = new MongoClient();
+	//$db = $m->db;
+	/*$test = $m->$db->$test;
+	$query = buildQuery(getUser());
+	$query['']*/
+	startDay();
 }
 function checkIfDayStarted($user){
 	$m = new MongoClient();
