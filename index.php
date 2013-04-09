@@ -30,7 +30,7 @@
 			</ul>
 			<div id="tabs-1">
 			<p id="date">Danas je &nbsp</p>
-			<p id="proveo">Sati na poslu: &nbsp</p>
+			<p id="proveo">Sati na poslu: &nbsp</p><p id="vrijeme"></p>
 			<form id="zapocniPoso">
 				<button id="kreni">Pocni dan</button>
 				<button id="stani">Zavrsi dan</button>
@@ -81,8 +81,8 @@
 		}).done(function(data){
 			console.log(data);
 			//console.log(data.vrijeme);
-			if(data.vrijeme)
-				$("#proveo").val('Na poslu vec: '+data.vrijeme);
+			//if(data.vrijeme)
+			$("#proveo").text("Na poslu vec "+data.vrijeme);
 		});
 	});
 	function skipLogin(){

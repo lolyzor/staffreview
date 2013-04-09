@@ -69,6 +69,7 @@ function buildQuery($user){
 	$time = explode(" ",getTime());
 	return array('day'=>$time[0],'month'=>$time[1],'year'=>$time[2],'user'=>$user);
 }
+
 function checkHours(){
 	$user = filterOutStuff($_POST['user']);
 	//$date = $_POST['startdate'];
@@ -77,36 +78,32 @@ function checkHours(){
 	$m = new MongoClient();
 	$db = $m->db->test;
 	$result = $db->findOne(buildQuery($user));
-	//echo $result['fulltime'];
-	//return;
 	$then = new DateTime($result['fulltime']);
 	$now = new DateTime(getFormatedTime());
-	//fucking set manualy date and time http://php.net/manual/en/ref.datetime.php
-	//$then = new DateTime();
-	//$then->setDate($result['year'],$result['month'],$result['day']);
-	//$then->setTime(list(explode(" ",$result['fulltime'])));
-	$nt = getTime();
 	$diff = $now->diff($then);
 	if($diff->h > 0){
 		$h = $diff->h;
 		if($h == 1)
 			$status .= strval($h).' sat ';
-		if($h <= 4)
+		elseif($h <= 4)
 			$status .= strval($h).' sata ';
-		if($h > 4)
+		elseif($h > 4)
 			$status .= strval($h).' sati ';
 	}
 	if($diff->i > 0){
 		$m = $diff->i;
-		if($m%10 == 1)
+		if($m >= 5 && <= 20)
 			$status .= strval($m).' minuta';
-		if($m%10 <= 4)
+		elseif($m%10 == 1)
+			$status .= strval($m).' minutu';
+		elseif($m%10 <= 4)
 			$status .= strval($m).' minute';
-		if($m%10 > 4)
+		elseif($m%10 > 4 || $m%10 == 0)
 			$status .= strval($m).' minuta';
 	}
 	//$output = array('status'=>'ok','vrijeme'=>$then->format('l F Y H:i').' '.$now->format('l F Y H:i'));
-	$output = array('status'=>'ok','vrijeme'=>strval($diff->h).' '.strval($diff->i).' status '.$status);
+	//$output = array('status'=>'ok','vrijeme'=>strval($diff->h).' '.strval($diff->i).' status '.$status);
+	$output = array('status'=>'ok','vrijeme'=>$status);
 	echo json_encode($output);
 		
 }
