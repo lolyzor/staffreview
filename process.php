@@ -16,6 +16,9 @@ switch ($_POST['action']) {
 	case 'stopDay':
 		stopDay(getUser());
 		break;
+	case 'workedHours':
+		checkWorkedHours(getUser());
+		break;
 	default:
 		# code...
 		echo 'bad request bitch';
@@ -31,8 +34,20 @@ function filterOutStuff($var){
 	$var2 = preg_replace("/[^a-zA-Z0-9]+/", "", html_entity_decode($var, ENT_QUOTES));
 	return $var2;
 }
-function stopDay($user){
+function checkWorkedHours($user){
 	$m = new MongoClient();
+	$db = $m->db;
+	$test = $db->test;
+	$results = $test->find(buildQuery(getUser()),array('id','fulltime'));
+	$begin = new DateTime($results[0]['fulltime']);
+	$end = new DateTime($results[1]['fulltime']);
+	$diff = $begin->diff($end);
+	$status = padezi($diff->h,$diff->i);
+	echo json_encode(array('vrijeme'=>$status));
+
+}
+function stopDay($user){
+	//$m = new MongoClient();
 	//$db = $m->db;
 	/*$test = $m->$db->$test;
 	$query = buildQuery(getUser());
@@ -43,9 +58,13 @@ function checkIfDayStarted($user){
 	$m = new MongoClient();
 	$db = $m->db;
 	$test = $db->test;
-	$results = $test->findOne(buildQuery(getUser()),array('id'));
+	$results = $test->find(buildQuery(getUser()),array('id'));
 	if(count($results)){
-		$output = array('logged'=>'true');
+		$output = array('logged'=>'true','loggedOut'=>'false');
+		if(count($results)>1){
+			$output['loggedOut'] = 'true';
+		}
+		
 		echo json_encode($output);
 	}
 
@@ -79,6 +98,7 @@ function startDay(){
 }
 function getTime(){
 	return date('l F Y H:i');
+	//return date('d F Y H:i');
 }
 function getFormatedTime(){
 	return date('Y-m-d H:i');	
@@ -88,17 +108,10 @@ function buildQuery($user){
 	return array('day'=>$time[0],'month'=>$time[1],'year'=>$time[2],'user'=>$user);
 }
 
-function checkHours(){
-	$user = getUser();
+function padezi($h,$m){
 	$status = '';
-	$m = new MongoClient();
-	$db = $m->db->test;
-	$result = $db->findOne(buildQuery($user));
-	$then = new DateTime($result['fulltime']);
-	$now = new DateTime(getFormatedTime());
-	$diff = $now->diff($then);
-	if($diff->h > 0){
-		$h = $diff->h;
+	if($h > 0){
+		//$h = $diff->h;
 		if($h == 1)
 			$status .= strval($h).' sat';
 		elseif($h <= 4)
@@ -106,8 +119,8 @@ function checkHours(){
 		elseif($h > 4)
 			$status .= strval($h).' sati';
 	}
-	if($diff->i > 0){
-		$m = $diff->i;
+	if($m > 0){
+		//$m = $diff->i;
 		if($m >= 5 and $m <= 20)
 			$status .= ' i '.strval($m).' minuta...';
 		elseif($m%10 == 1)
@@ -117,6 +130,20 @@ function checkHours(){
 		elseif($m%10 > 4 or $m%10 == 0)
 			$status .= ' i '.strval($m).' minuta...';
 	}
+	if($h < 1)
+		$status = str_replace(" i ", "", $status);
+	return $status;
+}
+
+function checkHours(){
+	$user = getUser();
+	$m = new MongoClient();
+	$db = $m->db->test;
+	$result = $db->findOne(buildQuery($user));
+	$then = new DateTime($result['fulltime']);
+	$now = new DateTime(getFormatedTime());
+	$diff = $now->diff($then);
+	$status = padezi($diff->h,$diff->i);
 	//$output = array('status'=>'ok','vrijeme'=>$then->format('l F Y H:i').' '.$now->format('l F Y H:i'));
 	//$output = array('status'=>'ok','vrijeme'=>strval($diff->h).' '.strval($diff->i).' status '.$status);
 	$output = array('status'=>'ok','vrijeme'=>$status,'fullinfo'=>$then->format('l F Y H:i ').$now->format('l F Y H:i'));

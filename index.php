@@ -95,6 +95,17 @@
 		});
 
 	}
+	function ukupnoVrijeme(){
+		$.ajax({
+			url:'process.php',
+			data:'action=workedHours&user='+$.user,
+			type:'POST',
+			dataType:'json'
+		}).done(function(data){
+			console.log(data);
+			$("#proveo").text('Odlogovan, ukupno '+data.vrijeme)
+		});
+	}
 	function checkIfDayStarted(){
 		$.ajax({
 			url:'process.php',
@@ -105,7 +116,13 @@
 			console.log(data);
 			if(data.logged == 'true'){
 				$("#kreni").attr('disabled','disabled');
-				provjeri();
+				if(data.loggedOut == 'false'){
+					provjeri();
+				}
+				else{
+					$("#stani").attr('disabled','disabled');
+					ukupnoVrijeme();
+				}					
 			}
 		});
 	}
@@ -168,6 +185,7 @@
 			dataType:'json'
 		}).done(function(data){
 			console.log(data.status);
+			$("#stani").attr('disabled','disabled');
 		});
 	});
 	$("#kreni").on('click',function(){
