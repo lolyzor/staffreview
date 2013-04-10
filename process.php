@@ -39,8 +39,11 @@ function checkWorkedHours($user){
 	$db = $m->db;
 	$test = $db->test;
 	$results = $test->find(buildQuery(getUser()),array('id','fulltime'));
-	$begin = new DateTime($results[0]['fulltime']);
-	$end = new DateTime($results[1]['fulltime']);
+	//$results = $results->();
+	$tmp1 = $results->getNext();
+	$tmp2 = $results->getNext();
+	$begin = new DateTime($tmp1['fulltime']);
+	$end = new DateTime($tmp2['fulltime']);
 	$diff = $begin->diff($end);
 	$status = padezi($diff->h,$diff->i);
 	echo json_encode(array('vrijeme'=>$status));
@@ -59,9 +62,12 @@ function checkIfDayStarted($user){
 	$db = $m->db;
 	$test = $db->test;
 	$results = $test->find(buildQuery(getUser()),array('id'));
-	if(count($results)){
+	//$results = $test->find(buildQuery(getUser()),array('id')).count(false);
+	//$result = $results->toArray();
+	if($results->hasNext()){
 		$output = array('logged'=>'true','loggedOut'=>'false');
-		if(count($results)>1){
+		$output['count'] = $results->count();
+		if($results->count()>1){
 			$output['loggedOut'] = 'true';
 		}
 		

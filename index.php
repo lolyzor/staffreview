@@ -82,6 +82,8 @@
 	}		
 	function provjeri(){
 		//mafaka broji ga, udri mujoo hohohooh
+		if($.odlogovan)
+			return false;
 		$.ajax({
 			url:'process.php',
 			data:'action=checkHours&user='+$.user,
@@ -121,6 +123,8 @@
 				}
 				else{
 					$("#stani").attr('disabled','disabled');
+					//$("#proveo").attr('disabled','disabled');
+					$.odlogovan = true;
 					ukupnoVrijeme();
 				}					
 			}
@@ -129,16 +133,9 @@
 	$(function(){
 		$.user='lol';
 		$("#workerpage").toggle(false);
-		//checkIfDayStarted();
-		//skipLogin();
-		console.log('ready');
-		//console.log($(window).width());
-		//console.log($(document).width());
-		//$(".h1login").center();
 		$("#loginimage").css('position','fixed');
 		$("#loginimage").css('top','20%');
 		$("#loginimage").css('left','40%');
-
 		$(".login").css('position','fixed');
 		$(".login").css('top','60%');
 		$(".login").css('left','35%');
@@ -189,11 +186,7 @@
 		});
 	});
 	$("#kreni").on('click',function(){
-			//return false;
-			//console.log();
-			//var date = $.datepicker.formatDate('yy mm dd',new Date());
 			$.user = 'lol';
-			//return false;
 			$.ajax({
 				url:'process.php',
 				data:'action=startDay&user='+$.user,
