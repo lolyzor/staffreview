@@ -19,8 +19,8 @@
 			<label for="username">Username</label>
 			<label for="password" style="margin-left:115px;">Password</label>
 			<br>
-			<input type="text" name="user">
-			<input type="text" name="pass">
+			<input type="text" name="user" id="username">
+			<input type="text" name="pass" id="password">
 		</form>
 		<button id="getResult" style="margin-top:5px;">Login</button>
 		<button id="registration" style="margin-top:5px;margin-left:115px;">Registration</button>
@@ -151,7 +151,7 @@
 	}
 	$(function(){
 		$("#tabs2").tabs();
-		$.user='lol';
+		//$.user=$("#username").val();
 		$("#workerpage").toggle(false);
 		$("#loginimage").css('position','fixed');
 		$("#loginimage").css('top','20%');
@@ -163,13 +163,22 @@
 	});
 	$('#getResult').on('click',function(){
 		console.log($("#loginform").serialize());
+		$.user = $("#username").val();
+		$.pass = $("#password").val();
+		if(!$.user || !$.pass){
+			$("#loginform").effect('shake',{},500);
+			return false;
+		}
 		$.ajax({
 			type: "POST",
 			url: "process.php",
 			data: $("#loginform").serialize()+'&action=login'
 		}).done(function(data){
-			if(data != 'success')
+			if(data != 'success'){
+				$("#loginform").effect('shake',{},500);
 				return false;
+			}
+				
 			$("#workerpage").tabs();
 			document.title = 'Home'
 			//$("#date").append(day+hours+minutes);
@@ -206,7 +215,7 @@
 		});
 	});
 	$("#kreni").on('click',function(){
-			$.user = 'lol';
+			//$.user = 'lol';
 			$.ajax({
 				url:'process.php',
 				data:'action=startDay&user='+$.user,
@@ -219,6 +228,7 @@
 				$("#proveo").val('Na poslu vec: '+data.vrijeme);
 				console.log(data.status);
 			});
+		$("#kreni").attr('disabled','disabled');
 		});
 	$("#adminLogin").on('click',function(){
 		//console.log();
@@ -231,6 +241,9 @@
 			console.log(data);
 			if(data.login == 'success'){
 				window.location.href='adminpanel.html';
+			}
+			else{
+				$("#adminLogin").effect('shake',{},500);
 			}
 		});
 	});
