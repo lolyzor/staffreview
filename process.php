@@ -19,6 +19,9 @@ switch ($_POST['action']) {
 	case 'workedHours':
 		checkWorkedHours(getUser());
 		break;
+	case 'adminlogin':
+		adminLogin(getUser());
+		break;
 	default:
 		# code...
 		echo 'bad request bitch';
@@ -33,6 +36,10 @@ function getPass(){
 function filterOutStuff($var){
 	$var2 = preg_replace("/[^a-zA-Z0-9]+/", "", html_entity_decode($var, ENT_QUOTES));
 	return $var2;
+}
+function adminLogin($user){
+	$result = array('login'=>'success');
+	echo json_encode($result);
 }
 function checkWorkedHours($user){
 	$m = new MongoClient();
@@ -50,11 +57,6 @@ function checkWorkedHours($user){
 
 }
 function stopDay($user){
-	//$m = new MongoClient();
-	//$db = $m->db;
-	/*$test = $m->$db->$test;
-	$query = buildQuery(getUser());
-	$query['']*/
 	startDay();
 }
 function checkIfDayStarted($user){
@@ -138,6 +140,8 @@ function padezi($h,$m){
 	}
 	if($h < 1)
 		$status = str_replace(" i ", "", $status);
+	if($m < 1)
+		$status = 'tek poceo...';
 	return $status;
 }
 

@@ -7,19 +7,38 @@
 <body>
 	<!-- <h1 class="h1login">Login below</h1> -->
 	<div id="loginpage">
-	<img src="img/login.png" alt="loginimage" id="loginimage">	
-	<div class="login">
+	<!-- <img src="img/login.png" alt="loginimage" id="loginimage">	 -->
+	<div id="tabs2">
+		<ul>
+			<li><a href="#login">Login</a></li>
+			<li><a href="#admin">Admin</a></li>
+		</ul>
+	<div id="login" loginclass="login" style="margin-left:10px;">
+		<img src="img/login.png" alt="loginimage" id="1" style="margin-left:100px;">
 		<form id="loginform">
 			<label for="username">Username</label>
-			<label for="password" style="margin-left:85px;">Password</label>
+			<label for="password" style="margin-left:115px;">Password</label>
 			<br>
 			<input type="text" name="user">
 			<input type="text" name="pass">
 		</form>
 		<button id="getResult" style="margin-top:5px;">Login</button>
-		<button id="registration" style="margin-top:5px;margin-left:85px;">Registration</button>
+		<button id="registration" style="margin-top:5px;margin-left:115px;">Registration</button>
 		<div id="result"></div>
 	</div> <!-- login form -->
+	<div id="admin">
+		<form id="adminlogin">
+			<label for="username">Username</label>
+			<label for="password" style="margin-left:115px;">Password</label>
+			<br>
+			<input type="text" name="user">
+			<input type="text" name="pass">
+			<br>			
+		</form>
+		<button style="margin-top:5px;" id="adminLogin">Login</button>
+		<button style="margin-top:5px;margin-left:85px;" id="adminReg">Reg</button>
+	</div>
+</div> <!-- end of tabs2 -->
 	</div> <!-- end of login page -->
 	<div id="workerpage">
 		<div id="tabs">
@@ -131,6 +150,7 @@
 		});
 	}
 	$(function(){
+		$("#tabs2").tabs();
 		$.user='lol';
 		$("#workerpage").toggle(false);
 		$("#loginimage").css('position','fixed');
@@ -200,5 +220,19 @@
 				console.log(data.status);
 			});
 		});
+	$("#adminLogin").on('click',function(){
+		//console.log();
+		$.ajax({
+			url:'process.php',
+			data: $("#adminlogin").serialize()+'&action=adminlogin',
+			type:'POST',
+			dataType:'json'
+		}).done(function(data){
+			console.log(data);
+			if(data.login == 'success'){
+				window.location.href='adminpanel.html';
+			}
+		});
+	});
 </script>
 </html>
