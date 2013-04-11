@@ -48,21 +48,19 @@ function kolkoNaPoslu(){
 	$number = $result->count();
 	$users = [];
 	$times = [];
+	$status = [];
 	while($result->hasNext()){
 		$user = $result->getNext();
 		if(!in_array($user['user'],$users)){
 			array_push($users, $user['user']);
 		}
-		//$users['name'] = $user['user'];
-		//array_push($users, $user['user']);
-		//$users[$user['user']]['vrijeme'] = checkWorkedHours($user['user'],true);		
 	}
 	foreach ($users as $user) {
 		array_push($times, checkWorkedHours($user,true));
-		//$times= checkWorkedHours($user,true);
+		array_push($status, checkIfDayStarted($user,true));
 	}
 
-	echo json_encode(['status'=>'ok','number'=>count($users),'users'=>$users,'times'=>$times]);
+	echo json_encode(['status'=>'ok','number'=>count($users),'users'=>$users,'times'=>$times,'status'=>$status]);
 }
 function adminLogin($user){
 	$result = array('login'=>'success');
@@ -89,11 +87,11 @@ function checkWorkedHours($user,$mode=NULL){
 function stopDay($user){
 	startDay();
 }
-function checkIfDayStarted($user){
+function checkIfDayStarted($user,$mode=NULL){
 	$m = new MongoClient();
 	$db = $m->db;
 	$test = $db->test;
-	$results = $test->find(buildQuery(getUser()),array('id'));
+	$results = $test->find(buildQuery($user),array('id'));
 	//$results = $test->find(buildQuery(getUser()),array('id')).count(false);
 	//$result = $results->toArray();
 	if($results->hasNext()){
@@ -102,11 +100,21 @@ function checkIfDayStarted($user){
 		if($results->count()>1){
 			$output['loggedOut'] = 'true';
 		}
-		
-		echo json_encode($output);
 	}
-
+	if($mode === NULL)
+		echo json_encode($output);
+	else{
+		$var = $output['loggedOut'];
+		if($var == 'true')
+			$var = ' (zavrsio s poslom danas)';
+		if($var == 'false')
+			$var = ' ';
+		return $var;
+	}
+		
 }
+
+
 function login($user,$pass){
 	$m = new MongoClient();
 	$db = $m->db;
