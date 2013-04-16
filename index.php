@@ -112,7 +112,7 @@
 			console.log(data);
 			//console.log(data.vrijeme);
 			//if(data.vrijeme)
-			$("#proveo").text("Na poslu vec "+data.vrijeme);
+			$("#proveo").text("Na poslu "+data.vrijeme);
 		});
 
 	}
@@ -225,7 +225,8 @@
 				console.log(data);
 				//return false;
 				$("#proveo").toggle(true);
-				$("#proveo").val('Na poslu vec: '+data.vrijeme);
+				$("#proveo").val('Na poslu: '+data.vrijeme);
+				provjeri();
 				console.log(data.status);
 			});
 		$("#kreni").attr('disabled','disabled');

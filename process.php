@@ -94,11 +94,13 @@ function checkIfDayStarted($user,$mode=NULL){
 	$results = $test->find(buildQuery($user),array('id'));
 	//$results = $test->find(buildQuery(getUser()),array('id')).count(false);
 	//$result = $results->toArray();
+	$output = array('lol'=>$user);
 	if($results->hasNext()){
 		$output = array('logged'=>'true','loggedOut'=>'false');
 		$output['count'] = $results->count();
 		if($results->count()>1){
 			$output['loggedOut'] = 'true';
+			$output['user'] = buildQuery($user);
 		}
 	}
 	if($mode === NULL)
@@ -143,7 +145,7 @@ function startDay(){
 	echo json_encode($reply);
 }
 function getTime(){
-	return date('l F Y H:i');
+	return date('j F Y H:i');
 	//return date('d F Y H:i');
 }
 function getFormatedTime(){
@@ -170,7 +172,7 @@ function padezi($h,$m){
 	}
 	if($m > 0){
 		//$m = $diff->i;
-		if($m >= 5 and $m <= 20)
+		if($m >= 5 and $m <= 20 or $m%10 == 0)
 			$status .= ' i '.strval($m).' minuta...';
 		elseif($m%10 == 1)
 			$status .= ' i '.strval($m).' minutu...';
@@ -182,7 +184,7 @@ function padezi($h,$m){
 	if($h < 1)
 		$status = str_replace(" i ", "", $status);
 	if($m < 1 and $h < 1)
-		$status = 'tek poceo...';
+		$status = 'manje od minutu...';
 	return $status;
 }
 
