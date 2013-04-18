@@ -65,8 +65,13 @@ function listaFirmi(){
 	$m = new MongoClient();
 	$db = $m->db;
 	$firme = $db->firme;
-	$cursor = $firme->find([],['name']);
-	returnOutput($cursor->toArray());
+	$cursor = $firme->find([],['_id'=>0]);
+	$firme = [];
+	foreach($cursor as $firma){
+		if($firma['ime']!='undefined')
+			array_push($firme, $firma['ime']);
+	}
+	returnOutput($firme);
 }
 function dodajFirmu($firma){
 	$m = new MongoClient();
