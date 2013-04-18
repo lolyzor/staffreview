@@ -28,10 +28,25 @@ switch ($_POST['action']) {
 	case 'registration':
 		regajUsera(getUser(),getPass());
 		break;
+	case 'dodajFirmu':
+		dodajFirmu(getFirm());
+		break;
+	case 'logujFirmu':
+		logujFirmu(getFirm());
+		break;
+	case 'listaFirmi':
+		listaFirmi();
+		break;
 	default:
 		# code...
 		echo 'bad request bitch';
 		break;
+}
+function getFirm(){
+	return filterOutStuff($_POST['firma']);
+}
+function getFirmTime(){
+	return filterOutStuff($_POST['vrijeme']);	
 }
 function getUser(){
 	return filterOutStuff($_POST['user']);
@@ -42,6 +57,33 @@ function getPass(){
 function filterOutStuff($var){
 	$var2 = preg_replace("/[^a-zA-Z0-9]+/", "", html_entity_decode($var, ENT_QUOTES));
 	return $var2;
+}
+function returnOutput($array){
+	echo json_encode($array);
+}
+function listaFirmi(){
+	$m = new MongoClient();
+	$db = $m->db;
+	$firme = $db->firme;
+	$cursor = $firme->find([],['name']);
+	returnOutput($cursor->toArray());
+}
+function dodajFirmu($firma){
+	$m = new MongoClient();
+	$db = $m->db;
+	$firme = $db->firme;
+	$firme->insert(['ime'=>$firma]);
+	returnOutput(['status'=>'inserted']);
+}
+function logujFirmu($firma,$sati,$datum=NULL){
+	$m = new MongoClient();
+	$db = $m->db;
+	$firmelog = $db->firmelogs;
+	if($datum===NULL){
+		$datum = getFormatedTime();
+	}
+	$firmelog->insert(['firma'=>$firma,'sati'=>$sati,'datum'=>$datum]);
+	returnOutput(['status'=>'inserted']);
 }
 function regajUsera($user,$pass){
 	$m = new MongoClient();
