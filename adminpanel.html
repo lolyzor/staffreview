@@ -60,38 +60,63 @@
        <div id="reporti">Quis voluptatem rem est sapiente architecto iste assumenda inventore doloribus temporibus quia. Obcaecati, doloribus Lorem ipsum dolor sit amet, consectetur adipisicing elit. Recusandae, eius eos ipsum ut culpa odio neque cupiditate nam dolorum pariatur ea vel rem iure voluptas dolor reiciendis debitis veniam corporis! dolor quia totam placeat architecto quam odio veritatis a facilis pariatur quae cumque aspernatur atque perspiciatis!</div>
        <div id="radnici">Consectetur, exercitationem, vero nesciunt ab neque et voluptates vel tempore dolores vitae? Saepe, ratione, beatae, dolores ut consectetur maxime laboriosam mollitia voluptates esse qui explicabo facere incidunt debitis quaerat blanditiis.</div>
        <div id="grafovi">Ipsa, amet, nisi, labore cupiditate provident sequi ut recusandae eius eum dolorum nulla facilis vitae dolore aperiam ratione corporis odio consequuntur reiciendis unde quos sit ea voluptatibus modi? Hic, sit!</div>
-       <div id="firme">Ipsa, amet, nisi, labore cupiditate provident sequi ut recusandae eius eum dolorum nulla facilis vitae dolore aperiam ratione corporis odio consequuntur reiciendis unde quos sit ea voluptatibus modi? Hic, sit!</div>
+     <div id="firme">
+      <div>
+          <label style="display:inline-block;" for="novafirma">Dodaj firmu, ime:</label>
+          <input type="text" name="novafirma" style="display:inline-block;">
+          <button id="dodajFirmu">Update</button>
+      </div>
+        
+     </div>
        </div>
     </body>
     <script src="js/jquery.js"></script>
 	<script src="js/jqueryui.js"></script>
-	<script>
-		function kolkoNaPoslu(){
-			$.ajax({
-				url:'process.php',
-				data:'action=kolkonaposlu',
-				dataType:'json',
-				type:'POST'
-			}).done(function(data){
-				console.log(data.status);
-				var html = '<ul>';
-				$.each(data.users,function(index,value){
-					//console.log(index);
-					//console.log(val);
-					html+= '<li>'+value+' vrijeme na poslu '+data.times[index]+data.status[index]+'</li>';
-				});
-				html+= '</ul>'	
-				$("#naposlu").html(html);
-			});
-			
-		}
+	<script>		
+    function ajaxRequest(datA,options){
+      console.log(datA);
+      $.ajax({
+        url:'process.php',
+        data:datA,
+        type:'POST',
+        dataType:'json'
+      }).done(function(data){
+          handleData(data,options);
+      });
+    }
+    function handleData(data,options){
+      if(options=='kolkoNaPoslu'){
+        console.log(data.status);
+        var html = '<ul>';
+        $.each(data.users,function(index,value){
+          //console.log(index);
+          //console.log(val);
+          html+= '<li>'+value+' vrijeme na poslu '+data.times[index]+data.status[index]+'</li>';
+        });
+        html+= '</ul>'  
+        $("#naposlu").html(html);
+      }          
+      else{
+        console.log(data.status);
+      }
+    }
+    function kolkoNaPoslu(){    
+      ajaxRequest('action=kolkonaposlu','kolkoNaPoslu');      
+    }
+    function dodajFirmu(){
+      var data = '';
+      var firma = $("input[name=firma").val();
+      data+='firma='+firma+'&action=dodajFirmu';
+      ajaxRequest(data);
+    }
 		$(function(){
 			$("#tabs").tabs();
 			$("#tabsinner").tabs();
 			$("#sedmicaButtons").buttonset();
 			$("body").css('background','black');
 			kolkoNaPoslu();
-			$("#update").button({icons:{primary:"ui-icon-gear"}});
+      $("#update").button({icons:{primary:"ui-icon-gear"}});
+			$("#dodajFirmu").button({icons:{primary:"ui-icon-gear"}});
 			var date = $.datepicker.formatDate("DD, d MM,yy", new Date());
 			$("#date").text(date);
 		});
