@@ -25,6 +25,9 @@ switch ($_POST['action']) {
 	case 'kolkonaposlu':
 		kolkoNaPoslu();
 		break;
+	case 'registration':
+		regajUsera(getUser(),getPass());
+		break;
 	default:
 		# code...
 		echo 'bad request bitch';
@@ -40,11 +43,34 @@ function filterOutStuff($var){
 	$var2 = preg_replace("/[^a-zA-Z0-9]+/", "", html_entity_decode($var, ENT_QUOTES));
 	return $var2;
 }
+function regajUsera($user,$pass){
+	$m = new MongoClient();
+	$db = $m->db;
+	$users = $db->users;
+	$users->insert(['user'=>$user,'pass'=>$pass]);
+	echo json_encode(['statsu'=>'inserted']);
+}
+
+function login($user,$pass){
+	$m = new MongoClient();
+	$db = $m->db;
+	$users = $db->users;
+	//$query = array("user"=>array('$eq'=>$user),"pass"=>array('$eq'=>$pass));
+	$query = array("user"=>$user,"pass"=>$pass);
+	$results = $users->find(['user'=>$user,'pass'=>$pass],['id']);
+	if($results->hasNext()){
+		echo 'success';
+	}
+	else{
+		//echo 'failed '.$results->count().' '.json_encode($user->find()).' '.json_encode($query);
+		echo 'failed ';
+	}
+}
 function kolkoNaPoslu(){
 	$m = new MongoClient();
 	$db = $m->db;
-	$test = $db->test;
-	$result = $test->find(buildQuery(),['id','user']);
+	$userlogs = $db->userlogs;
+	$result = $userlogs->find(buildQuery(),['id','user']);
 	$number = $result->count();
 	$users = [];
 	$times = [];
@@ -69,8 +95,8 @@ function adminLogin($user){
 function checkWorkedHours($user,$mode=NULL){
 	$m = new MongoClient();
 	$db = $m->db;
-	$test = $db->test;
-	$results = $test->find(buildQuery($user),array('id','fulltime'));
+	$userlogs = $db->userlogs;
+	$results = $userlogs->find(buildQuery($user),array('id','fulltime'));
 	//$results = $results->();
 	$tmp1 = $results->getNext();
 	$tmp2 = $results->getNext();
@@ -90,8 +116,8 @@ function stopDay($user){
 function checkIfDayStarted($user,$mode=NULL){
 	$m = new MongoClient();
 	$db = $m->db;
-	$test = $db->test;
-	$results = $test->find(buildQuery($user),array('id'));
+	$userlogs = $db->userlogs;
+	$results = $userlogs->find(buildQuery($user),array('id'));
 	//$results = $test->find(buildQuery(getUser()),array('id')).count(false);
 	//$result = $results->toArray();
 	$output = array('lol'=>$user);
@@ -116,30 +142,16 @@ function checkIfDayStarted($user,$mode=NULL){
 		
 }
 
-
-function login($user,$pass){
-	$m = new MongoClient();
-	$db = $m->db;
-	$test = $db->test;
-	//$query = array("user"=>array('$eq'=>$user),"pass"=>array('$eq'=>$pass));
-	$query = array('user'=>$user,'pass'=>$pass);
-	$results = $test->find($query);
-	if($results->hasNext()){
-		echo 'success';
-	}
-	else{
-		echo 'failed';
-	}
-}
 function startDay(){
 	$user = getUser();
 	$date = explode(' ',getTime());
 	$m = new MongoClient();
-	$db = $m->db->test;
+	$db = $m->db;
+	$userlogs = $db->userlogs;
 	$query = buildQuery($user);
 	$fulltime = getFormatedTime();
 	$query['fulltime'] = $fulltime;
-	$db->insert($query);
+	$userlogs->insert($query);
 	$vrijeme = 'upravo poceo..';
 	$reply = array('status'=>'insreted '.$user,'vrijeme'=>$vrijeme);
 	echo json_encode($reply);
@@ -191,7 +203,7 @@ function padezi($h,$m){
 function checkHours(){
 	$user = getUser();
 	$m = new MongoClient();
-	$db = $m->db->test;
+	$db = $m->db->userlogs;
 	$result = $db->findOne(buildQuery($user));
 	$then = new DateTime($result['fulltime']);
 	$now = new DateTime(getFormatedTime());
