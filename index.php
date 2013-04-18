@@ -3,6 +3,11 @@
 <head>
     <title>Login</title>
     <link rel="stylesheet" href="css/jqueryui.css">
+    <style>
+    .ui-button-text {
+	        font-size: .6em;
+	    	}
+    </style>
 </head>
 <body>
 	<!-- <h1 class="h1login">Login below</h1> -->
@@ -56,13 +61,35 @@
 			</form>
 			</div>
 			<div id="tabs-2">
-			<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Eaque consequatur repellendus corrupti tempore? Dolore, reprehenderit, dolor laboriosam exercitationem odit ad harum quo similique obcaecati eos ipsam dolorum consequatur deserunt perferendis.</p>
+			<div style="">
+				<p style="display:inline-block;">Izaberi firmu</p>	
+				<select name="firma" id="firme" style="">
+					<option value="firma1">Firma1</option>
+					<option value="firma1">Firma1</option>
+					<option value="firma1">Firma1</option>
+				</select>				
+			</div>
+			<div>
+				<p style="display:inline-block;">Sati provedeno na servisu</p>
+				<input type="numeric" name="sati" id="servisSati" style="display:inline-block;">
+				<p style="display:inline-block;">i minuta</p>
+				<input type="numeric" name="minuta" id="servisMinuta">
+				<button id="update">Update</button>
+			</div>			
 			</div>
 			<div id="tabs-3">
-			<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Hic, pariatur, totam, ipsa, perferendis inventore ducimus similique maxime iure quos officia nulla ad soluta ipsam aliquid quibusdam ea in voluptas reprehenderit.</p>
-			<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Itaque, provident, officia est incidunt ratione quia expedita eligendi voluptatibus voluptate quod rem numquam obcaecati facere neque sint vel nulla laborum accusantium.</p>
+			<p>Informacije</p>
+			<div>
+				<label for="email" style="display:inline-block;">Email</label>
+				<input type="text" name="email">	
 			</div>
+			<div style="display:inline-block;">
+				<label for="broj" style="display:inline-block;">Broj &nbsp;</label>
+				<input type="numeric" name="broj">	
 			</div>
+			<button id="profilupdate">Update</button>			
+			</div> <!-- end of tabs 3 -->
+			</div> <!-- end of divs tabs -->
 	</div>
 	<?php //echo phpinfo(); ?>
 	</body>
@@ -160,6 +187,10 @@
 		$(".login").css('top','60%');
 		$(".login").css('left','35%');
 		$("body").css('background','black');		
+		$("#servisSati").spinner();
+		$("#servisMinuta").spinner();
+		$("#update").button({icons:{primary:"ui-icon-gear"}});
+		$("#profilupdate").button({icons:{primary:"ui-icon-gear"}});
 	});
 	$('#getResult').on('click',function(){
 		console.log($("#loginform").serialize());
@@ -196,8 +227,9 @@
 	$('#registration').on('click',function(){
 		$.ajax({
 			type: "POST",
-			url: "registration.php",
-			data: $("#loginform").serialize()
+			url: "process.php",
+			data: $("#loginform").serialize()+'&action=registration',
+			dataType:"json"
 		}).done(function(data){
 			$("#result").html(data);
 		});
