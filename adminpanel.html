@@ -1,0 +1,103 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Admin panel</title>
+        <link rel="stylesheet" href="css/jqueryui.css">
+        <style>
+	        .ui-button-text {
+	        font-size: .6em;
+	    	}
+        </style>
+        <link rel="author" href="humans.txt">
+    </head>
+    <body>
+    	<div id="tabs">
+        <ul>
+        	<li><a href="#main">Radnici</a></li>
+        	<li><a href="#firme">Firme</a></li>
+        	<li><a href="#reporti">Reporti</a></li>
+        	<li><a href="#radnici">Radnici</a></li>
+        	<li><a href="#grafovi">Grafovi</a></li>
+        </ul>
+        <div id="main">  
+        	<div id="tabsinner">
+        	<ul>
+        		<li><a href="#danas">Danas</a></li>
+        		<li><a href="#sedmica">Ove sedmice</a></li>
+        		<li><a href="#kalendar">Kalendar</a></li>
+        		<li><a href="#reporti2">Reporti</a></li>
+        	</ul>	        	
+        	<div id="danas">
+        		<p style="display:inline-block;">Danas je &nbsp;</p><p id="date" style="display:inline-block;"></p>
+        		<div>
+        			<p style="display:inline-block;">Na poslu danas</p>
+       				<button id="update" style="display:inline-block;">refresh</button>	
+        		</div>       			
+       			<p id="naposlu"></p>
+       		</div>     		
+       		<div id="sedmica">
+       			<!-- <p>Ove sedmice</p> -->
+       			 <div id="sedmicaButtons">
+					<input type="radio" id="radio1" name="pon" checked="checked"/><label for="radio1">Pon</label>
+					<input type="radio" id="radio2" name="uto"/><label for="radio2">Uto</label>
+					<input type="radio" id="radio3" name="sri" /><label for="radio3">Sri</label>
+					<input type="radio" id="radio4" name="cet" /><label for="radio4">Cet</label>
+					<input type="radio" id="radio5" name="pet" /><label for="radio5">Pet</label>
+				</div>
+       		</div> <!-- kraj sedmice -->
+       		<div id="kalendar">
+       			<p>Izaberi mjesec/dan</p>
+       		</div> <!-- kraj kalendara -->
+       		<div id="reporti2">
+       			<p>Individualno</p>
+       			<p>Firme</p>
+       		</div> <!-- kraj reporti -->
+			</div> <!-- kraj tabas inner -->
+        </div> <!-- kraj main page -->
+       <div id="reporti">Quis voluptatem rem est sapiente architecto iste assumenda inventore doloribus temporibus quia. Obcaecati, doloribus Lorem ipsum dolor sit amet, consectetur adipisicing elit. Recusandae, eius eos ipsum ut culpa odio neque cupiditate nam dolorum pariatur ea vel rem iure voluptas dolor reiciendis debitis veniam corporis! dolor quia totam placeat architecto quam odio veritatis a facilis pariatur quae cumque aspernatur atque perspiciatis!</div>
+       <div id="radnici">Consectetur, exercitationem, vero nesciunt ab neque et voluptates vel tempore dolores vitae? Saepe, ratione, beatae, dolores ut consectetur maxime laboriosam mollitia voluptates esse qui explicabo facere incidunt debitis quaerat blanditiis.</div>
+       <div id="grafovi">Ipsa, amet, nisi, labore cupiditate provident sequi ut recusandae eius eum dolorum nulla facilis vitae dolore aperiam ratione corporis odio consequuntur reiciendis unde quos sit ea voluptatibus modi? Hic, sit!</div>
+       <div id="firme">Ipsa, amet, nisi, labore cupiditate provident sequi ut recusandae eius eum dolorum nulla facilis vitae dolore aperiam ratione corporis odio consequuntur reiciendis unde quos sit ea voluptatibus modi? Hic, sit!</div>
+       </div>
+    </body>
+    <script src="js/jquery.js"></script>
+	<script src="js/jqueryui.js"></script>
+	<script>
+		function kolkoNaPoslu(){
+			$.ajax({
+				url:'process.php',
+				data:'action=kolkonaposlu',
+				dataType:'json',
+				type:'POST'
+			}).done(function(data){
+				console.log(data.status);
+				var html = '<ul>';
+				$.each(data.users,function(index,value){
+					//console.log(index);
+					//console.log(val);
+					html+= '<li>'+value+' vrijeme na poslu '+data.times[index]+data.status[index]+'</li>';
+				});
+				html+= '</ul>'	
+				$("#naposlu").html(html);
+			});
+			
+		}
+		$(function(){
+			$("#tabs").tabs();
+			$("#tabsinner").tabs();
+			$("#sedmicaButtons").buttonset();
+			$("body").css('background','black');
+			kolkoNaPoslu();
+			$("#update").button({icons:{primary:"ui-icon-gear"}});
+			var date = $.datepicker.formatDate("DD, d MM,yy", new Date());
+			$("#date").text(date);
+		});
+		$("#update").on('click',function(){
+			//console.log();
+			kolkoNaPoslu();
+		});
+	</script>
+</html>
