@@ -79,9 +79,9 @@ function logFirme(){
 	list($firma,$sati,$minuta) = filterOutStuff($_POST['firma'],$_POST['sati'],$_POST['minuta']);
 	$m = new MongoClient()
 	$db = $m->db;
-	$logfirme = $db->firmelog;
-	$logfirme->insert(['firma'=>that])
-}
+	$logfirme = $db->firmelogs;
+	$logfirme->insert(['firma'=>$firma,'sati'=>$sati,'minuta'=>$minuta])
+;}
 function listaFirmi(){
 	$m = new MongoClient();
 	$db = $m->db;
