@@ -61,8 +61,10 @@
 			</form>
 			</div>
 			<div id="tabs-2">
+			<form id="logFirme" action="#">
 			<div style="">
 				<p style="display:inline-block;">Izaberi firmu</p>	
+				
 				<select name="firma" id="firme" style="">
 					<option value="firma1">Firma1</option>
 					<option value="firma1">Firma1</option>
@@ -74,8 +76,9 @@
 				<input type="numeric" name="sati" id="servisSati" style="display:inline-block;">
 				<p style="display:inline-block;">i minuta</p>
 				<input type="numeric" name="minuta" id="servisMinuta">
-				<button id="update">Update</button>
+				<button id="dodajVrijemeFirmi">Update</button>
 			</div>			
+			</form>
 			</div>
 			<div id="tabs-3">
 			<p>Informacije</p>
@@ -176,6 +179,25 @@
 			}
 		});
 	}
+	function listaFirmi(data){
+		var html = '';
+        $.each(data,function(index,value){
+          html+='<option>'+value+'</option>';
+        });
+		$("#firme").html(html);
+	}
+	function ajaxBitch(data,action){
+		$.ajax({
+			url:'process.php',
+			data:data,
+			type:'POST',
+			dataType:'JSON'
+		}).done(function(data){
+			if(action="listafirmi")
+				listaFirmi(data);
+			console.log(data);
+		});
+	}
 	$(function(){
 		$("#tabs2").tabs();
 		//$.user=$("#username").val();
@@ -189,8 +211,12 @@
 		$("body").css('background','black');		
 		$("#servisSati").spinner();
 		$("#servisMinuta").spinner();
-		$("#update").button({icons:{primary:"ui-icon-gear"}});
+		$("#dodajVrijemeFirmi").button({icons:{primary:"ui-icon-gear"}});
 		$("#profilupdate").button({icons:{primary:"ui-icon-gear"}});
+		$("#logFirme").on('submit',function(){
+			//console.log();
+			return false;
+		});
 	});
 	$('#getResult').on('click',function(){
 		console.log($("#loginform").serialize());
@@ -280,5 +306,19 @@
 			}
 		});
 	});
+	$("#dodajVrijemeFirmi").on('click',function(){
+		//console.log();
+		data = $("#logFirme").serialize()+'&action=logFirme';
+		ajaxBitch(data,'logFirme');
+	});
+	$("#workerpage").on('tabsactivate',function(event,ui){
+      //console.log(event);
+      //console.log(ui.newTab[0].textContent);
+      var tabName = ui.newTab[0].textContent;
+      console.log(tabName);
+      //return false;
+      if (tabName == 'Servis')
+      	ajaxBitch('action=listaFirmi','listafirmi');
+    });
 </script>
 </html>
