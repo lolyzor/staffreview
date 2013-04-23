@@ -37,6 +37,9 @@ switch ($_POST['action']) {
 	case 'listaFirmi':
 		listaFirmi();
 		break;
+	case 'logFirm':
+		logFirme():
+		break;
 	default:
 		# code...
 		echo 'bad request bitch';
@@ -54,12 +57,30 @@ function getUser(){
 function getPass(){
 	return filterOutStuff($_POST['pass']);
 }
-function filterOutStuff($var){
-	$var2 = preg_replace("/[^a-zA-Z0-9]+/", "", html_entity_decode($var, ENT_QUOTES));
-	return $var2;
+function filterOutStuff($var,$var2=NULL,$var3=NULL){
+	if($var2 === NULL and $var3 === NULL){
+		$var = preg_replace("/[^a-zA-Z0-9]+/", "", html_entity_decode($var, ENT_QUOTES));
+		return $var;	
+	}
+	else{
+		$var = preg_replace("/[^a-zA-Z0-9]+/", "", html_entity_decode($var, ENT_QUOTES));
+		$var2 = preg_replace("/[^a-zA-Z0-9]+/", "", html_entity_decode($var2, ENT_QUOTES));
+		$var3 = preg_replace("/[^a-zA-Z0-9]+/", "", html_entity_decode($var3, ENT_QUOTES));
+		return [$var1,$var2,$var3];
+	}
+	
+	
+
 }
 function returnOutput($array){
 	echo json_encode($array);
+}
+function logFirme(){
+	list($firma,$sati,$minuta) = filterOutStuff($_POST['firma'],$_POST['sati'],$_POST['minuta']);
+	$m = new MongoClient()
+	$db = $m->db;
+	$logfirme = $db->firmelog;
+	$logfirme->insert(['firma'=>that])
 }
 function listaFirmi(){
 	$m = new MongoClient();
