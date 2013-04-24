@@ -66,7 +66,7 @@ function filterArray($array){
 	foreach($array as $elem){
 		array_push($newArray,filterOutStuff($elem));
 	}
-	return newArray();
+	return $newArray;
 }
 function returnOutput($array){
 	echo json_encode($array);
