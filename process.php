@@ -78,6 +78,8 @@ function logFirme($user){
 	$logfirme = $db->firmelogs;
 	$date = getFormatedTime();
 	$logfirme->insert(['firma'=>$firma,'sati'=>$sati,'minuta'=>$minuta,'date'=>$date,'user'=>$user]);
+	$output = ['stats'=>'inserted'];
+	returnOutput($output);
 }
 function listaFirmi(){
 	$m = new MongoClient();
