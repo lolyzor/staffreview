@@ -37,8 +37,8 @@ switch ($_POST['action']) {
 	case 'listaFirmi':
 		listaFirmi();
 		break;
-	case 'logFirm':
-		logFirme():
+	case 'logFirme':
+		logFirme(getUser());
 		break;
 	default:
 		# code...
@@ -57,31 +57,28 @@ function getUser(){
 function getPass(){
 	return filterOutStuff($_POST['pass']);
 }
-function filterOutStuff($var,$var2=NULL,$var3=NULL){
-	if($var2 === NULL and $var3 === NULL){
-		$var = preg_replace("/[^a-zA-Z0-9]+/", "", html_entity_decode($var, ENT_QUOTES));
-		return $var;	
+function filterOutStuff($var){
+	$var = preg_replace("/[^a-zA-Z0-9]+/", "", html_entity_decode($var, ENT_QUOTES));
+	return $var;	
+}
+function filterArray($array){
+	$newArray = array();
+	foreach($array as $elem){
+		array_push($newArray,filterOutStuff($elem));
 	}
-	else{
-		$var = preg_replace("/[^a-zA-Z0-9]+/", "", html_entity_decode($var, ENT_QUOTES));
-		$var2 = preg_replace("/[^a-zA-Z0-9]+/", "", html_entity_decode($var2, ENT_QUOTES));
-		$var3 = preg_replace("/[^a-zA-Z0-9]+/", "", html_entity_decode($var3, ENT_QUOTES));
-		return [$var1,$var2,$var3];
-	}
-	
-	
-
+	return newArray();
 }
 function returnOutput($array){
 	echo json_encode($array);
 }
-function logFirme(){
-	list($firma,$sati,$minuta) = filterOutStuff($_POST['firma'],$_POST['sati'],$_POST['minuta']);
-	$m = new MongoClient()
+function logFirme($user){
+	list($firma,$sati,$minuta) = filterArray([$_POST['firma'],$_POST['sati'],$_POST['minuta']]); 
+	$m = new MongoClient();
 	$db = $m->db;
 	$logfirme = $db->firmelogs;
-	$logfirme->insert(['firma'=>$firma,'sati'=>$sati,'minuta'=>$minuta])
-;}
+	$date = getFormatedTime();
+	$logfirme->insert(['firma'=>$firma,'sati'=>$sati,'minuta'=>$minuta,'date'=>$date,'user'=>$user]);
+}
 function listaFirmi(){
 	$m = new MongoClient();
 	$db = $m->db;
