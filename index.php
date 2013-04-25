@@ -308,7 +308,7 @@
 	});
 	$("#dodajVrijemeFirmi").on('click',function(){
 		//console.log();
-		data = $("#logFirme").serialize()+'&action=logFirme';
+		data = $("#logFirme").serialize()+'&action=logFirme'+'&user='+$.user;
 		ajaxBitch(data,'logFirme');
 	});
 	$("#workerpage").on('tabsactivate',function(event,ui){
