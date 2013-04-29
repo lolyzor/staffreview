@@ -8,7 +8,7 @@ switch ($_POST['action']) {
 		startDay();
 		break;
 	case 'checkHours':
-		checkHours();
+		checkHours(getUser());
 		break;
 	case 'checkIfDayStarted':
 		checkIfDayStarted(getUser());
@@ -72,15 +72,35 @@ function returnOutput($array){
 	echo json_encode($array);
 }
 function logFirme($user){
+    //koja je razlika izmedju logFirme i logujFirme ? wtf is this
 	list($firma,$sati,$minuta) = filterArray([$_POST['firma'],$_POST['sati'],$_POST['minuta']]); 
 	$m = new MongoClient();
 	$db = $m->db;
 	$logfirme = $db->firmelogs;
-	$date = getFormatedTime();
-	$logfirme->insert(['firma'=>$firma,'sati'=>$sati,'minuta'=>$minuta,'date'=>$date,'user'=>$user]);
+    $date = getFormatedTime();
+    $seperatedDate = getTime();
+    list($day,$month,$year) = explode(" ",$seperatedDate);
+	$logfirme->insert(['firma'=>$firma,'sati'=>$sati,'minuta'=>$minuta,'user'=>$user,'day'=>$day,'month'=>$month,'year'=>$year,'fullDate'=>$date]);
 	$output = ['stats'=>'inserted'];
 	returnOutput($output);
 }
+function logUser($user,$hours){
+    //log usera, get worked hours and insert it !
+    //this should be called when he logges out ! two ajax requests ?
+    //$time = explode(" ",getTime());
+	//if($user)
+	//	return array('day'=>$time[0],'month'=>$time[1],'year'=>$time[2],'user'=>$user);
+    $m = new MongoClient();
+	$db = $m->db;
+	$logfirme = $db->userlogs;
+	$date = getFormatedTime();
+    $seperatedDate = getTime();
+    list($day,$month,$year) = explode(" ",$seperatedDate);
+	$userlogs->insert(['user'=>$user,'sati'=>$sati,'minuta'=>$minuta,'day'=>$day,'month'=>$month,'year'=>$year,'fullDate'=>$date]);
+	$output = ['stats'=>'inserted'];
+	returnOutput($output);
+
+	}
 function listaFirmi(){
 	$m = new MongoClient();
 	$db = $m->db;
@@ -149,7 +169,7 @@ function kolkoNaPoslu(){
 		}
 	}
 	foreach ($users as $user) {
-		array_push($times, checkWorkedHours($user,true));
+		array_push($times, checkHours($user,true));
 		array_push($status, checkIfDayStarted($user,true));
 	}
 
@@ -165,12 +185,18 @@ function checkWorkedHours($user,$mode=NULL){
 	$userlogs = $db->userlogs;
 	$results = $userlogs->find(buildQuery($user),array('id','fulltime'));
 	//$results = $results->();
-	$tmp1 = $results->getNext();
-	$tmp2 = $results->getNext();
-	$begin = new DateTime($tmp1['fulltime']);
-	$end = new DateTime($tmp2['fulltime']);
-	$diff = $begin->diff($end);
-	$status = padezi($diff->h,$diff->i);
+    if($results->count()<2){
+        $status = 8;
+    }
+    //check if this works, the log out is a problem 
+    else{
+        $tmp1 = $results->getNext();
+        $tmp2 = $results->getNext();
+        $begin = new DateTime($tmp1['fulltime']);
+        $end = new DateTime($tmp2['fulltime']);
+        $diff = $begin->diff($end);
+        $status = padezi($diff->h,$diff->i);
+    }
 	if($mode === NULL)
 		echo json_encode(array('vrijeme'=>$status));
 	else
@@ -267,8 +293,8 @@ function padezi($h,$m){
 	return $status;
 }
 
-function checkHours(){
-	$user = getUser();
+function checkHours($user,$mod=NULL){
+    //$user = getUser();
 	$m = new MongoClient();
 	$db = $m->db->userlogs;
 	$result = $db->findOne(buildQuery($user));
@@ -279,7 +305,11 @@ function checkHours(){
 	//$output = array('status'=>'ok','vrijeme'=>$then->format('l F Y H:i').' '.$now->format('l F Y H:i'));
 	//$output = array('status'=>'ok','vrijeme'=>strval($diff->h).' '.strval($diff->i).' status '.$status);
 	$output = array('status'=>'ok','vrijeme'=>$status,'fullinfo'=>$then->format('l F Y H:i ').$now->format('l F Y H:i'));
-	echo json_encode($output);
-		
+    if($mod){
+        return $status;
+    }
+    else{
+        echo json_encode($output);
+    }
 }
 ?>
