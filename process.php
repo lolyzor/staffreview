@@ -40,6 +40,9 @@ switch ($_POST['action']) {
 	case 'logFirme':
 		logFirme(getUser());
 		break;
+	case 'pdfReport':
+		pdfReport();
+		break;
 	default:
 		# code...
 		echo 'bad request bitch';
@@ -70,6 +73,21 @@ function filterArray($array){
 }
 function returnOutput($array){
 	echo json_encode($array);
+}
+function pdfReport(){
+    list($firma,$mjesec) = filterArray([$_POST['firma'],$_POST['sati']]);
+    $m = new MongoClient();
+	$db = $m->db;
+	$logfirme = $db->firmelogs;
+    $cursor = $logfirme->find(['mjesec'=>$mjesec]);
+    $vrijeme = array();
+    $firme = array();
+	foreach($cursor as $firma){
+        array_push($firme, $firma['ime']);
+        array_push($vrijeme, $firma['sati']);
+	}
+	$output = ['query'=>'ok','firme'=>$firme,'vrijeme'=>$vrijeme];
+	returnOutput($output);    
 }
 function logFirme($user){
     //koja je razlika izmedju logFirme i logujFirme ? wtf is this
