@@ -179,6 +179,9 @@
 			}
 		});
 	}
+    function handleData(data,options){
+        
+    }
 	function listaFirmi(data){
 		var html = '';
         $.each(data,function(index,value){
@@ -193,8 +196,10 @@
 			type:'POST',
 			dataType:'JSON'
 		}).done(function(data){
-			if(action="listafirmi")
-				listaFirmi(data);
+            if(action=="listafirmi"){
+                console.log(action);
+                listaFirmi(data);
+            }
 			console.log(data);
 		});
 	}
