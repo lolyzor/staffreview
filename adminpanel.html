@@ -65,7 +65,7 @@
 		</div> 	
             <label for="mjesecReporta">Isprintaj report za mjesec</label><select name="mjesecReporta" id="mjesecReporta" style="display:data-inline"></select>
             <button id="dajReport">PDF</button>
-        <div id="firmeReport"></div>
+            <div id="firmeReport"></div>
         </div>
 
        <div id="radnici">Consectetur, exercitationem, vero nesciunt ab neque et voluptates vel tempore dolores vitae? Saepe, ratione, beatae, dolores ut consectetur maxime laboriosam mollitia voluptates esse qui explicabo facere incidunt debitis quaerat blanditiis.</div>
@@ -111,7 +111,7 @@
         //$("#naposlu").html(html).fadeIn('slow');
 	$("#naposlu").html(html).fadeTo('slow',1.0);
       }          
-      if(options=='listafirmi'){
+    if(options=='listafirmi'){
         console.log(data);
         var html = '';
         $.each(data,function(index,value){
@@ -119,15 +119,25 @@
         });
         $("#listafirmi").html(html);
 	}
-      if(options=='listafirmiR'){
+    if(options=='listafirmiR'){
         console.log(data);
         var html = '';
         $.each(data,function(index,value){
-		html+='<option>'+value+'</option>';
+        html+='<option>'+value+'</option>';
         });
         $("#listafirmi1").html(html);
-	}
-      else{
+        }
+  if(options=='pdfReport'){
+      console.log('what is that');
+        console.log(data.firma);
+        var html = '<ul>';
+        $.each(data.vrijeme,function(index,value){
+        html+='<li>'+value+'</li>';
+        });
+        html += '</ul>';
+        $("#firmeReport").html(html);
+        }
+  else{
         console.log(data.status);
       }
     }
@@ -143,10 +153,10 @@
     function pdfReport(){
         var firma = $("#listafirmi1 option:selected").text();
         var mjesec = $("#mjesecReporta option:selected").text();
-        var data = 'action=reportFirmu'+'&mjesec='+mjesec+'&firma='+firma;
+        var data = 'action=pdfReport'+'&mjesec='+mjesec+'&firma='+firma;
         console.log(data);
-        return false;
-        ajaxRequest(data);
+        //return false;
+        ajaxRequest(data,'pdfReport');
 
     }
     function dodajFirmu(){
