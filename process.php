@@ -75,18 +75,19 @@ function returnOutput($array){
 	echo json_encode($array);
 }
 function pdfReport(){
-    list($firma,$mjesec) = filterArray([$_POST['firma'],$_POST['sati']]);
+    list($firma,$mjesec) = filterArray([$_POST['firma'],$_POST['mjesec']]);
     $m = new MongoClient();
 	$db = $m->db;
 	$logfirme = $db->firmelogs;
-    $cursor = $logfirme->find(['mjesec'=>$mjesec]);
+    $cursor = $logfirme->find(['month'=>$mjesec,'firma'=>$firma],['sati','minuta']);
     $vrijeme = array();
     $firme = array();
-	foreach($cursor as $firma){
-        array_push($firme, $firma['ime']);
-        array_push($vrijeme, $firma['sati']);
+	foreach($cursor as $firmA){
+        $kolko = padezi((int)$firmA['sati'],(int)$firmA['minuta']);
+        array_push($vrijeme, $kolko);
 	}
-	$output = ['query'=>'ok','firme'=>$firme,'vrijeme'=>$vrijeme];
+	$output = ['query'=>'ok','firma'=>$firma,'kolko'=>$cursor->count(),'vrijeme'=>$vrijeme];
+	//$output = ['vrijeme'=>$vrijeme];
 	returnOutput($output);    
 }
 function logFirme($user){
@@ -98,8 +99,8 @@ function logFirme($user){
     $date = getFormatedTime();
     $seperatedDate = getTime();
     list($day,$month,$year) = explode(" ",$seperatedDate);
-	$logfirme->insert(['firma'=>$firma,'sati'=>$sati,'minuta'=>$minuta,'user'=>$user,'day'=>$day,'month'=>$month,'year'=>$year,'fullDate'=>$date]);
-	$output = ['stats'=>'inserted'];
+	$logfirme->insert(['firma'=>$firma,'sati'=>(int)$sati,'minuta'=>(int)$minuta,'user'=>$user,'day'=>$day,'month'=>$month,'year'=>$year,'fullDate'=>$date]);
+	$output = ['stats'=>'inserted','month'=>$month];
 	returnOutput($output);
 }
 function logUser($user,$hours){
