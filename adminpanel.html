@@ -76,10 +76,10 @@
         <input type="text" name="novafirma" style="margin-top:5px;margin-bottom:5px;">
         <br>
         <label style="" for="satnica">Cjena po satu</label>
-        <input type="numeric" name="satnica" style="margin-top:5px;margin-bottom:5px;">
+        <input type="numeric" id="satnica" name="satnica" style="margin-top:5px;margin-bottom:5px;">
         <br>
         <label style="" for="minutnica">Cjena po minuti</label>
-        <input type="numeric" name="minutnica" style="margin-top:5px;margin-bottom:5px;">
+        <input type="numeric" id="minutnica" name="minutnica" style="margin-top:5px;margin-bottom:5px;">
         <button id="dodajFirmu">Update</button>
         <!--display:inline-block; -->
       </div>
@@ -154,6 +154,7 @@
         html += '</ul>';
         if(data.kolko != '')
             html += 'ukupno '+data.kolko;
+            html += 'cjena '+data.ukupno;
         $("#firmeReport").html(html);
         }
     if(options=='deleteFirm'){
@@ -186,7 +187,10 @@
     function dodajFirmu(){
       var data = '';
       var firma = $("input[name=novafirma]").val();
+      var satnica = $("#satnica").val();
+      var minutnica = $("#minutnica").val();
       data+='firma='+firma+'&action=dodajFirmu';
+      data+='&satnica='+satnica+'&minutnica='+minutnica;
       ajaxRequest(data);
     }
     $(function(){

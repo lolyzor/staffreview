@@ -102,9 +102,20 @@ function pdfReport(){
         }
         array_push($vrijeme, $kolko);
 	}
-	$output = ['query'=>'ok','firma'=>$firma,'kolko'=>padezi($total,$minutes,true),'vrijeme'=>$vrijeme];
+	$output = ['query'=>'ok','ukupno'=>calculateTotal($firma,$total,$minutes),'kolko'=>padezi($total,$minutes,true),'vrijeme'=>$vrijeme];
 	//$output = ['vrijeme'=>$vrijeme,'count'=>$cursor->count()];
 	returnOutput($output);    
+}
+function calculateTotal($firm,$h,$min){
+    $m = new MongoClient();
+	$db = $m->db;
+	$firme = $db->firme;
+    $cursor = $firme->find(['ime'=>$firm],['satnica','minutnica']);
+    $firmA = $cursor->getNext(); 
+    $satnica = (int)$firmA['satnica'];
+    $minutnica = (int)$firmA['minutnica'];
+    $total = ($h*$satnica) + ($min*$minutnica);
+    return $total.' KM';//.$h.' '.$satnica.' '.$min.' '.$minutnica.' '.$firm;
 }
 function deleteFirm(){
     $firm = getFirm();
