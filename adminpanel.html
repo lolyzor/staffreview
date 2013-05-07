@@ -64,7 +64,7 @@
 		<select id="listafirmi1" name="listafirmi1"></select>	
 		</div> 	
             <label for="mjesecReporta">Isprintaj report za mjesec</label><select name="mjesecReporta" id="mjesecReporta" style="display:data-inline"></select>
-            <button id="dajReport">PDF</button>
+            <button id="dajReport">Check</button>
             <div id="firmeReport"></div>
         </div>
 
@@ -72,9 +72,16 @@
        <div id="grafovi">Ipsa, amet, nisi, labore cupiditate provident sequi ut recusandae eius eum dolorum nulla facilis vitae dolore aperiam ratione corporis odio consequuntur reiciendis unde quos sit ea voluptatibus modi? Hic, sit!</div>
      <div id="firme">
       <div>
-        <label style="display:inline-block;" for="novafirma">Dodaj firmu, ime:</label>
-        <input type="text" name="novafirma" style="display:inline-block;">
+        <label style="" for="novafirma">Dodaj firmu, ime:</label>
+        <input type="text" name="novafirma" style="margin-top:5px;margin-bottom:5px;">
+        <br>
+        <label style="" for="satnica">Cjena po satu</label>
+        <input type="numeric" name="satnica" style="margin-top:5px;margin-bottom:5px;">
+        <br>
+        <label style="" for="minutnica">Cjena po minuti</label>
+        <input type="numeric" name="minutnica" style="margin-top:5px;margin-bottom:5px;">
         <button id="dodajFirmu">Update</button>
+        <!--display:inline-block; -->
       </div>
       <div>
         <p>Lista firmi</p>
@@ -114,10 +121,21 @@
     if(options=='listafirmi'){
         console.log(data);
         var html = '';
+        button = '<button role="firmaDelete" style="margin-left:5px;">Delete</button>'
         $.each(data,function(index,value){
-          html+='<li>'+value+'</li>';
+          html+='<li>'+value+button+'</li>';
         });
         $("#listafirmi").html(html);
+        $("button[role=firmaDelete]").each(function(){
+            $(this).button({icons:{primary:"ui-icon-gear"}})
+            $(this).on('click',function(){
+            var firma = $(this).parent().text();
+            firma = firma.replace('Delete',"");
+            var data = 'action=deleteFirm&firma='+firma;
+            console.log(data);
+            ajaxRequest(data,'deleteFirm');
+            });
+        });
 	}
     if(options=='listafirmiR'){
         console.log(data);
@@ -128,15 +146,21 @@
         $("#listafirmi1").html(html);
         }
   if(options=='pdfReport'){
-      console.log('what is that');
         console.log(data.firma);
         var html = '<ul>';
         $.each(data.vrijeme,function(index,value){
         html+='<li>'+value+'</li>';
         });
         html += '</ul>';
+        if(data.kolko != '')
+            html += 'ukupno '+data.kolko;
         $("#firmeReport").html(html);
         }
+    if(options=='deleteFirm'){
+        console.log(data.status);
+        console.log(data.firm);
+        console.log('recievd data');
+    }
   else{
         console.log(data.status);
       }
@@ -173,12 +197,15 @@
 	$("body").css('background','black');
 	kolkoNaPoslu();
       //listaFirmi();
-      $("#dajReport").button({icons:{primary:"ui-icon-gear"}});
-      $("#update").button({icons:{primary:"ui-icon-gear"}});
-      $("#dodajFirmu").button({icons:{primary:"ui-icon-gear"}});
+      $("#dajReport, #update, #dodajFirmu").button({icons:{primary:"ui-icon-gear"}});
 	var date = $.datepicker.formatDate("DD, d MM,yy", new Date());
 	$("#date").text(date);
 	});
+	$("button[role=firmaDelete]").on('click',function(){
+		console.log("yayh");
+        var firma = $(this).parrent().text();
+        console.log(firma);
+		});
 	$("#update").on('click',function(){
 		//console.log();
 		$("#naposlu").fadeTo('slow',0.0,kolkoNaPoslu);

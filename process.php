@@ -43,10 +43,17 @@ switch ($_POST['action']) {
 	case 'pdfReport':
 		pdfReport();
 		break;
+	case 'deleteFirm':
+		deleteFirm();
+		break;
 	default:
 		# code...
 		echo 'bad request bitch';
 		break;
+}
+function getMonth($mjesec){
+    $mjeseci = ['Januar'=>'January','Februar'=>'February','Mart'=>'March','April'=>'April','Maj'=>'May','Juni'=>'June','Juli'=>'July','August'=>'August','Septembar'=>'September','Oktobar'=>'October','Novermbar'=>'November','Decembar'=>'December'];
+    return $mjeseci[$mjesec];
 }
 function getFirm(){
 	return filterOutStuff($_POST['firma']);
@@ -79,16 +86,34 @@ function pdfReport(){
     $m = new MongoClient();
 	$db = $m->db;
 	$logfirme = $db->firmelogs;
+    $mjesec = getMonth($mjesec);
     $cursor = $logfirme->find(['month'=>$mjesec,'firma'=>$firma],['sati','minuta']);
     $vrijeme = array();
     $firme = array();
+    $total = 0;
+    $minutes = 0;
 	foreach($cursor as $firmA){
         $kolko = padezi((int)$firmA['sati'],(int)$firmA['minuta']);
+        $total += (int)$firmA['sati'];
+        $minutes  += (int)$firmA['minuta'];
+        if($minutes > 60){
+            $total+=1;
+            $minutes = 0;
+        }
         array_push($vrijeme, $kolko);
 	}
-	$output = ['query'=>'ok','firma'=>$firma,'kolko'=>$cursor->count(),'vrijeme'=>$vrijeme];
-	//$output = ['vrijeme'=>$vrijeme];
+	$output = ['query'=>'ok','firma'=>$firma,'kolko'=>padezi($total,$minutes,true),'vrijeme'=>$vrijeme];
+	//$output = ['vrijeme'=>$vrijeme,'count'=>$cursor->count()];
 	returnOutput($output);    
+}
+function deleteFirm(){
+    $firm = getFirm();
+	$m = new MongoClient();
+	$db = $m->db;
+	$firme = $db->firme;
+    $firme->remove(['ime'=>$firm],["justOne"=>true]);
+    $output = ['status'=>'okay','deleted'=>$firm];
+    returnOutput($output);
 }
 function logFirme($user){
     //koja je razlika izmedju logFirme i logujFirme ? wtf is this
@@ -133,10 +158,11 @@ function listaFirmi(){
 	returnOutput($firme);
 }
 function dodajFirmu($firma){
+	list($firma,$sati,$minuta) = filterArray([$_POST['firma'],$_POST['satnica'],$_POST['minutnica']]); 
 	$m = new MongoClient();
 	$db = $m->db;
 	$firme = $db->firme;
-	$firme->insert(['ime'=>$firma]);
+	$firme->insert(['ime'=>$firma,'satnica'=>$sati,'minutnica'=>$minuta]);
 	returnOutput(['status'=>'inserted']);
 }
 function logujFirmu($firma,$sati,$datum=NULL){
@@ -283,7 +309,7 @@ function buildQuery($user=""){
 		return array('day'=>$time[0],'month'=>$time[1],'year'=>$time[2]);
 }
 
-function padezi($h,$m){
+function padezi($h,$m,$mode=false){
 	$status = '';
 	if($h > 0){
 		//$h = $diff->h;
@@ -305,6 +331,9 @@ function padezi($h,$m){
 		elseif($m%10 > 4 or $m%10 == 0)
 			$status .= ' i '.strval($m).' minuta...';
 	}
+    if($mode){
+        return $status;
+    }
 	if($h < 1)
 		$status = str_replace(" i ", "", $status);
 	if($m < 1 and $h < 1)
