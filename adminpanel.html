@@ -65,6 +65,7 @@
 		</div> 	
             <label for="mjesecReporta">Isprintaj report za mjesec</label><select name="mjesecReporta" id="mjesecReporta" style="display:data-inline"></select>
             <button id="dajReport">Check</button>
+            <button id="dajPdf">PDF</button>
             <div id="firmeReport"></div>
         </div>
 
@@ -162,6 +163,9 @@
         console.log(data.firm);
         console.log('recievd data');
     }
+    if(options=='makePdf'){
+        console.log(data);
+    }
   else{
         console.log(data.status);
       }
@@ -174,6 +178,12 @@
     }
     function kolkoNaPoslu(){    
       ajaxRequest('action=kolkonaposlu','kolkoNaPoslu');      
+    }
+    function makePdf(){
+        var firma = $("#listafirmi1 option:selected").text();
+        var mjesec = $("#mjesecReporta option:selected").text();
+        var data = 'action=makePdf'+'&mjesec='+mjesec+'&firma='+firma;
+        ajaxRequest(data,'makePdf');
     }
     function pdfReport(){
         var firma = $("#listafirmi1 option:selected").text();
@@ -201,7 +211,8 @@
 	$("body").css('background','black');
 	kolkoNaPoslu();
       //listaFirmi();
-      $("#dajReport, #update, #dodajFirmu").button({icons:{primary:"ui-icon-gear"}});
+      $("#dajReport, #update, #dodajFirmu, #dajPdf").button({icons:{primary:"ui-icon-gear"}});
+      $("#dajPdf").toggle(false);
 	var date = $.datepicker.formatDate("DD, d MM,yy", new Date());
 	$("#date").text(date);
 	});
@@ -221,8 +232,14 @@
       });
     $("#dajReport").on('click',function(){
       //console.log();
+      $("#dajPdf").toggle(true);
       pdfReport();
     });
+    $("#dajPdf").on('click',function(){
+      //console.log();
+      makePdf();
+    });
+
     $("#tabs").on('tabsactivate',function(event,ui){
 		  //console.log(event);
 		  //console.log(ui.newTab[0].textContent);
