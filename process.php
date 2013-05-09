@@ -46,6 +46,9 @@ switch ($_POST['action']) {
 	case 'deleteFirm':
 		deleteFirm();
 		break;
+	case 'makePdf':
+		pdfReport(true);
+		break;
 	default:
 		# code...
 		echo 'bad request bitch';
@@ -81,15 +84,15 @@ function filterArray($array){
 function returnOutput($array){
 	echo json_encode($array);
 }
-function pdfReport(){
+function pdfReport($makePdf=false){
     list($firma,$mjesec) = filterArray([$_POST['firma'],$_POST['mjesec']]);
     $m = new MongoClient();
 	$db = $m->db;
 	$logfirme = $db->firmelogs;
     $mjesec = getMonth($mjesec);
-    $cursor = $logfirme->find(['month'=>$mjesec,'firma'=>$firma],['sati','minuta']);
+    $cursor = $logfirme->find(['month'=>$mjesec,'firma'=>$firma],['sati','minuta','day']);
     $vrijeme = array();
-    $firme = array();
+    $logs = array();
     $total = 0;
     $minutes = 0;
 	foreach($cursor as $firmA){
@@ -100,11 +103,23 @@ function pdfReport(){
             $total+=1;
             $minutes = 0;
         }
-        array_push($vrijeme, $kolko);
+        array_push($vrijeme, 'Dan '.$firmA['day'].': '.$kolko);
+        array_push($logs, [0=>$firmA['day'],1=>$firmA['sati'],2=>$firmA['minuta'],3=>calculateTotal($firma,$firmA['sati'],$firmA['minuta'])]);
 	}
 	$output = ['query'=>'ok','ukupno'=>calculateTotal($firma,$total,$minutes),'kolko'=>padezi($total,$minutes,true),'vrijeme'=>$vrijeme];
 	//$output = ['vrijeme'=>$vrijeme,'count'=>$cursor->count()];
-	returnOutput($output);    
+    if(!$makePdf)
+        returnOutput($output);    
+    else{
+        returnPdf($logs,$output['kolko'],$firma);
+    }
+}
+function returnPdf($data,$total,$firma){
+    require_once('makePdf.php');
+    //$makePdf = new makePdf();
+    //$makePdf->table($data,$total);
+    //$makePdf->output();
+    doPdf($data,$total,$firma);
 }
 function calculateTotal($firm,$h,$min){
     $m = new MongoClient();
