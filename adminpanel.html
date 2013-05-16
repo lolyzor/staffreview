@@ -54,6 +54,8 @@
        		<div id="reporti2">
        			<p>Individualno</p>
        			<p>Firme</p>
+            <label for="mjesecReporta">Isprintaj report za mjesec</label><select name="mjesecReporta" id="mjesecReportaUser" style="display:data-inline"></select>
+                <button id="userReport">Report</button>
        		</div> <!-- kraj reporti -->
 			</div> <!-- kraj tabas inner -->
         </div> <!-- kraj main page -->
@@ -166,6 +168,9 @@
     if(options=='makePdf'){
         console.log(data);
     }
+    if(options=='userReport'){
+        console.log(data);
+    }
   else{
         console.log(data.status);
       }
@@ -178,6 +183,13 @@
     }
     function kolkoNaPoslu(){    
       ajaxRequest('action=kolkonaposlu','kolkoNaPoslu');      
+    }
+    function userReport(){
+        /*var firma = $("#listafirmi1 option:selected").text();*/
+        var mjesec = $("#mjesecReportaUser option:selected").text();
+        var data = 'action=userReport'+'&mjesec='+mjesec;
+        console.log(data);
+        ajaxRequest(data,'userReport');
     }
     function makePdf(){
         var firma = $("#listafirmi1 option:selected").text();
@@ -211,7 +223,7 @@
 	$("body").css('background','black');
 	kolkoNaPoslu();
       //listaFirmi();
-      $("#dajReport, #update, #dodajFirmu, #dajPdf").button({icons:{primary:"ui-icon-gear"}});
+      $("#dajReport, #update, #dodajFirmu, #dajPdf, #userReport").button({icons:{primary:"ui-icon-gear"}});
       $("#dajPdf").toggle(false);
 	var date = $.datepicker.formatDate("DD, d MM,yy", new Date());
 	$("#date").text(date);
@@ -239,6 +251,10 @@
       //console.log();
       makePdf();
     });
+    $("#userReport").on('click',function(){
+      //console.log();
+      userReport();
+    });
 
     $("#tabs").on('tabsactivate',function(event,ui){
 		  //console.log(event);
@@ -255,6 +271,17 @@
 			}
 		$("#mjesecReporta").html(html);
 		}
+    });
+    $("#tabsinner").on('tabsactivate',function(event,ui){
+        var tabName = ui.newTab[0].textContent;
+        if(tabName == 'Reporti'){
+			var html = "";
+			var limit = (new Date()).getMonth();
+			for(var i=0;i<=limit;i++){
+				html += '<option>'+ $.mjeseci[i]+'</option>';	
+			}
+		$("#mjesecReportaUser").html(html);
+        }
     });
 	</script>
 </html>
