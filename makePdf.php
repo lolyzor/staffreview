@@ -59,8 +59,8 @@ class PDF extends FPDF{
             $fill = !$fill;
         }
         // Closing line
-        $this->Cell(array_sum($w),0,'','T');
-        $this->Cell(10,10,$total,0,1);
+        $this->Cell(array_sum($w),2,'','T',2);
+        $this->Cell(0,10,$total,2,0,'L');
     }
 }
 function doPdf($data,$total,$firma){
