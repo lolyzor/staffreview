@@ -49,6 +49,9 @@ switch ($_POST['action']) {
 	case 'makePdf':
 		pdfReport(true);
 		break;
+	case 'userReport':
+		userReport();
+		break;
 	default:
 		# code...
 		echo 'bad request bitch';
@@ -84,6 +87,56 @@ function filterArray($array){
 function returnOutput($array){
 	echo json_encode($array);
 }
+function getAllUsers($month=false){
+    $m = new MongoClient();
+	$db = $m->db;
+	$users = $db->userlogs;
+    if($month)
+        $cursor = $users->find(['month'=>$month],['user']);
+    else
+        $cursor = $users->find([],['user']);
+    $list = [];
+    foreach($cursor as $user){
+       array_push($list,$user['user']); 
+    }
+    return $list;
+}
+function userReport(){
+    $month = getMonth(filterOutStuff($_POST['mjesec']));
+    $m = new MongoClient();
+	$db = $m->db;
+	$userlogs = $db->userlogs;
+    $users = getAllUsers();
+    $date = date_parse($month);
+    $numOfDays = cal_days_in_month(CAL_GREGORIAN,$date['month'], 2013); // 31
+    $logs = [];
+    foreach($users as $user){
+        $tmp = [];
+        for($i=0;$i<$numOfDays;$i++){
+            $cursor = $userlogs->find(['user'=>$user,'month'=>$month,'day'=>$i+1]); 
+            if($cursor->count() == 1){
+                $cursor = $cursor->getNext();
+                array_push($tmp,['day'=>$cursor['day'],'month'=>$cursor['month'],'hours'=>'Nije odlogovan']);
+            }
+            if($cursor->count()>1){
+                $started = $cursor->getNext();
+                $ended = $cursor->getNext();
+                $diff = new Date($started['fulldate']);
+                $diff2 = new Date($ended['fulldate']);
+                $hours = $diff->diff($diff2);
+                array_push($tmp,['day'=>$started['day'],'month'=>$started['month'],'hours'=>$hours->h]);
+            }
+            else{
+                array_push($tmp,['day'=>$i,'month'=>$month,'hours'=>'nije bio na poslu']);
+            }
+        }
+        //foreach($cursor as $log){
+        //    array_push($users[$user],[$hours,$day]);
+        //   }
+         array_push($logs,[$user=>$tmp]);
+    }
+    returnOutput(['status'=>'ok','logs'=>json_encode($logs)]);
+}
 function pdfReport($makePdf=false){
     list($firma,$mjesec) = filterArray([$_POST['firma'],$_POST['mjesec']]);
     $m = new MongoClient();
@@ -111,7 +164,7 @@ function pdfReport($makePdf=false){
     if(!$makePdf)
         returnOutput($output);    
     else{
-        returnPdf($logs,$output['kolko'],$firma);
+        returnPdf($logs,'Ukupno '.$output['kolko'].' cjena '.$output['ukupno'],$firma);
     }
 }
 function returnPdf($data,$total,$firma){
