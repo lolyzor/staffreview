@@ -97,7 +97,9 @@ function getAllUsers($month=false){
         $cursor = $users->find([],['user']);
     $list = [];
     foreach($cursor as $user){
-       array_push($list,$user['user']); 
+        if(!in_array($user['user'],$list)){
+           array_push($list,$user['user']); 
+        }
     }
     return $list;
 }
@@ -113,16 +115,17 @@ function userReport(){
     foreach($users as $user){
         $tmp = [];
         for($i=0;$i<$numOfDays;$i++){
-            $cursor = $userlogs->find(['user'=>$user,'month'=>$month,'day'=>$i+1]); 
-            if($cursor->count() == 1){
+            $cursor = $userlogs->find(['user'=>$user,'month'=>$month,'day'=>strval($i+1)]); 
+            $count = $cursor->count();
+            if($count == 1){
                 $cursor = $cursor->getNext();
                 array_push($tmp,['day'=>$cursor['day'],'month'=>$cursor['month'],'hours'=>'Nije odlogovan']);
             }
-            if($cursor->count()>1){
+            if($count>1){
                 $started = $cursor->getNext();
                 $ended = $cursor->getNext();
-                $diff = new Date($started['fulldate']);
-                $diff2 = new Date($ended['fulldate']);
+                $diff = new DateTime($started['fulltime']);
+                $diff2 = new DateTime($ended['fulltime']);
                 $hours = $diff->diff($diff2);
                 array_push($tmp,['day'=>$started['day'],'month'=>$started['month'],'hours'=>$hours->h]);
             }
@@ -130,11 +133,9 @@ function userReport(){
                 array_push($tmp,['day'=>$i,'month'=>$month,'hours'=>'nije bio na poslu']);
             }
         }
-        //foreach($cursor as $log){
-        //    array_push($users[$user],[$hours,$day]);
-        //   }
          array_push($logs,[$user=>$tmp]);
     }
+    $cursor = $userlogs->find(['user'=>$users[0],'month'=>$month,'day'=>(string)25]);
     returnOutput(['status'=>'ok','logs'=>json_encode($logs)]);
 }
 function pdfReport($makePdf=false){
