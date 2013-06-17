@@ -56,6 +56,20 @@
        			<p>Firme</p>
             <label for="mjesecReporta">Isprintaj report za mjesec</label><select name="mjesecReporta" id="mjesecReportaUser" style="display:data-inline"></select>
                 <button id="userReport">Report</button>
+                <div id="userResult">
+                    <h3>Na poslu</h3>
+                    <div>
+                        <p id="worked"></p>
+                    </div>
+                    <h3>Nije odlogovan</h3>
+                    <div>
+                        <p id="notLoggedOut"></p>
+                    </div>
+                    <h3>Nije radio</h3>
+                    <div>
+                        <p id="notWorked"></p>
+                    </div>
+                </div> <!-- kraj userReport accordian -->
        		</div> <!-- kraj reporti -->
 			</div> <!-- kraj tabas inner -->
         </div> <!-- kraj main page -->
@@ -103,7 +117,7 @@
         url:'process.php',
         data:datA,
         type:'POST',
-        dataType:'json'
+        dataType:'json',
       }).done(function(data){
           handleData(data,options);
       });
@@ -168,8 +182,61 @@
     if(options=='makePdf'){
         console.log(data);
     }
+    function recursive(data,i){
+        //console.log(i);
+        $.each(data,function(ii,data2){
+            //console.log(data2);
+            if(typeof data2 === "object"){
+                recursive(data2,i+1);
+            }
+            else{
+                if(data2.user){
+                    console.log(user);
+                }
+                if(data2.action){
+                    console.log(data2.action);
+                }
+                if(data2.hours){
+                    //console.log(hours);
+                }
+                //console.log(data2);
+            }
+        });
+    }
     if(options=='userReport'){
-        console.log(data);
+        //console.log(data.logs.length);
+        var logs = $.parseJSON(data.logs);
+        //console.log(logs);
+        var worked = '<ul>';
+        var notWorked = '<ul>';
+        var notLoggedOut = '<ul>';
+        var numOfUsers = logs.length;
+        for(var i=0;i<numOfUsers;i++){
+            console.log(logs[i][0].user);
+            worked += '<li>'+logs[i][0].user+'</li>';
+            var nWorked = logs[i][0].worked.length;
+            var nNotWorked = logs[i][0].notWorked.length;
+            var nNloggedOut = logs[i][0].notLoggedOut.length;
+            for(var j=0;j<nWorked;j++){
+                worked += '<li>'+logs[i][0].worked[j].hours+'</li>';
+                worked += '<p>work log'+logs[i][0].worked[j].workedOn+'</p>';
+                //console.log(d[i][0].worked[j].hours);
+            }
+            for(var j=0;j<nNotWorked;j++){
+                notWorked += '<li>'+logs[i][0].notWorked[j].hours+'</li>';
+            }
+            for(var j=0;j<nNloggedOut;j++){
+                notLoggedOut += '<li>'+logs[i][0].notLoggedOut[j].hours+'</li>';
+            }
+        }
+        worked += '</ul>';
+        notWorked += '</ul>';
+        notLoggedOut += '</ul>';
+        console.log(worked);
+        //$("#worked").html(worked);
+        //$("#notWorked").html(notWorked);
+        //$("#notLoggedOut").html(notLoggedOut);
+        //$("#userResult").accordion('destroy').accordion().toggle(true);
     }
   else{
         console.log(data.status);
@@ -225,6 +292,7 @@
       //listaFirmi();
       $("#dajReport, #update, #dodajFirmu, #dajPdf, #userReport").button({icons:{primary:"ui-icon-gear"}});
       $("#dajPdf").toggle(false);
+      $("#userResult").accordion().toggle(false);
 	var date = $.datepicker.formatDate("DD, d MM,yy", new Date());
 	$("#date").text(date);
 	});
