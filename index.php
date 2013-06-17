@@ -57,8 +57,10 @@
 			<p id="proveo">Sati na poslu: &nbsp</p><p id="vrijeme"></p>
 			<form id="zapocniPoso">
 				<button id="kreni">Pocni dan</button>
-				<button id="stani">Zavrsi dan</button>
-			</form>
+                <button id="stani">Zavrsi dan</button>
+                <p>Log radnog dana</p>
+                <textarea id="workedOn" cols="40" rows="10"></textarea>
+            </form>
 			</div>
 			<div id="tabs-2">
 			<form id="logFirme" action="#">
@@ -267,9 +269,14 @@
 	});
 	$("#stani").on('click',function(){
 		//console.log();
+        var logDana = $("#workedOn").val();
+        if(!logDana){
+            $("#workedOn").val('Upisi log za danas prije nego se odlogujes');
+            return false;
+        }
 		$.ajax({
 			url:'process.php',
-			data:'action=stopDay&user='+$.user,
+			data:'action=stopDay&user='+$.user+'&workedOn='+logDana,
 			type:'POST',
 			dataType:'json'
 		}).done(function(data){
