@@ -111,7 +111,13 @@ function userReport(){
     $users = getAllUsers();
     $date = date_parse($month);
     $numOfDays = cal_days_in_month(CAL_GREGORIAN,$date['month'], 2013); // 31
+    if($month == date('F')){
+        $numOfDays = (int)date('j');
+    }
     $logs = [];
+    $worked=[];
+    $notLoggedOut=[];
+    $notWorked=[];
     foreach($users as $user){
         $tmp = [];
         for($i=0;$i<$numOfDays;$i++){
@@ -119,23 +125,25 @@ function userReport(){
             $count = $cursor->count();
             if($count == 1){
                 $cursor = $cursor->getNext();
-                array_push($tmp,['day'=>$cursor['day'],'month'=>$cursor['month'],'hours'=>'Nije odlogovan']);
+                $cameOn = explode(" ",$cursor['fulltime'])[1];
+                array_push($notLoggedOut,['day'=>$cursor['day'],'month'=>$cursor['month'],'hours'=>$cameOn]);
             }
             if($count>1){
                 $started = $cursor->getNext();
                 $ended = $cursor->getNext();
                 $diff = new DateTime($started['fulltime']);
                 $diff2 = new DateTime($ended['fulltime']);
+                $workedOn = $ended['workedOn'];
                 $hours = $diff->diff($diff2);
-                array_push($tmp,['day'=>$started['day'],'month'=>$started['month'],'hours'=>$hours->h]);
+                array_push($worked,['day'=>$started['day'],'month'=>$started['month'],'hours'=>$hours->h,'workedOn'=>$workedOn]);
             }
             else{
-                array_push($tmp,['day'=>$i,'month'=>$month,'hours'=>'nije bio na poslu']);
+                array_push($notWorked,['day'=>$i,'month'=>$month,'hours'=>'nije bio na poslu']);
             }
         }
-         array_push($logs,[$user=>$tmp]);
+         array_push($logs,[['user'=>$user,'worked'=>$worked,'notLoggedOut'=>$notLoggedOut,'notWorked'=>$notWorked]]);
     }
-    $cursor = $userlogs->find(['user'=>$users[0],'month'=>$month,'day'=>(string)25]);
+    //$cursor = $userlogs->find(['user'=>$users[0],'month'=>$month,'day'=>(string)25]);
     returnOutput(['status'=>'ok','logs'=>json_encode($logs)]);
 }
 function pdfReport($makePdf=false){
@@ -381,8 +389,11 @@ function getTime(){
 function getFormatedTime(){
 	return date('Y-m-d H:i');	
 }
-function buildQuery($user=""){
+function buildQuery($user="",$workedOn=""){
 	$time = explode(" ",getTime());
+    if($workedOn){
+		return array('day'=>$time[0],'month'=>$time[1],'year'=>$time[2],'user'=>$user,'workedOn'=>$workedOn);
+    }
 	if($user)
 		return array('day'=>$time[0],'month'=>$time[1],'year'=>$time[2],'user'=>$user);
 	else
