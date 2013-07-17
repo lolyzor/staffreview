@@ -7,349 +7,364 @@
         <title>Admin panel</title>
         <link rel="stylesheet" href="css/jqueryui.css">
         <style>
-	        .ui-button-text {
-	        font-size: .6em;
-	    	}
+            .ui-button-text {
+                font-size: .6em;
+            }
         </style>
         <link rel="author" href="humans.txt">
     </head>
     <body>
-    	<div id="tabs">
-        <ul>
-        	<li><a href="#main">Radnici</a></li>
-        	<li><a href="#firme">Firme</a></li>
-        	<li><a href="#reporti">Reporti</a></li>
-        	<li><a href="#radnici">Radnici</a></li>
-        	<li><a href="#grafovi">Grafovi</a></li>
-        </ul>
-        <div id="main">  
-        	<div id="tabsinner">
-        	<ul>
-        		<li><a href="#danas">Danas</a></li>
-        		<li><a href="#sedmica">Ove sedmice</a></li>
-        		<li><a href="#kalendar">Kalendar</a></li>
-        		<li><a href="#reporti2">Reporti</a></li>
-        	</ul>	        	
-        	<div id="danas">
-        		<p style="display:inline-block;">Danas je &nbsp;</p><p id="date" style="display:inline-block;"></p>
-        		<div>
-        			<p style="display:inline-block;">Na poslu danas</p>
-       				<button id="update" style="display:inline-block;">refresh</button>	
-        		</div>       			
-       			<p id="naposlu"></p>
-       		</div>     		
-       		<div id="sedmica">
-       			<!-- <p>Ove sedmice</p> -->
-       			 <div id="sedmicaButtons">
-					<input type="radio" id="radio1" name="pon" checked="checked"/><label for="radio1">Pon</label>
-					<input type="radio" id="radio2" name="uto"/><label for="radio2">Uto</label>
-					<input type="radio" id="radio3" name="sri" /><label for="radio3">Sri</label>
-					<input type="radio" id="radio4" name="cet" /><label for="radio4">Cet</label>
-					<input type="radio" id="radio5" name="pet" /><label for="radio5">Pet</label>
-				</div>
-       		</div> <!-- kraj sedmice -->
-       		<div id="kalendar">
-       			<p>Izaberi mjesec/dan</p>
-       		</div> <!-- kraj kalendara -->
-       		<div id="reporti2">
-       			<p>Individualno</p>
-       			<p>Firme</p>
-            <label for="mjesecReporta">Isprintaj report za mjesec</label><select name="mjesecReporta" id="mjesecReportaUser" style="display:data-inline"></select>
-                <button id="userReport">Report</button>
-                <div id="userResult">
-                    <h3>Na poslu</h3>
-                    <div>
-                        <p id="worked"></p>
-                    </div>
-                    <h3>Nije odlogovan</h3>
-                    <div>
-                        <p id="notLoggedOut"></p>
-                    </div>
-                    <h3>Nije radio</h3>
-                    <div>
-                        <p id="notWorked"></p>
-                    </div>
-                </div> <!-- kraj userReport accordian -->
-       		</div> <!-- kraj reporti -->
-			</div> <!-- kraj tabas inner -->
-        </div> <!-- kraj main page -->
-	<div id="reporti">
-		<div style="margin-bottom:10px;">
-		<p style="display:data-inline">Reporti za firme</p>
-		<label for="listafirmi1" style="display:data-inline">Izaberi firmu</label>
-		<select id="listafirmi1" name="listafirmi1"></select>	
-		</div> 	
-            <label for="mjesecReporta">Isprintaj report za mjesec</label><select name="mjesecReporta" id="mjesecReporta" style="display:data-inline"></select>
-            <button id="dajReport">Check</button>
-            <button id="dajPdf">PDF</button>
-            <div id="firmeReport"></div>
-        </div>
+        <div id="tabs">
+            <ul>
+                <li><a href="#main">Radnici</a></li>
+                <li><a href="#firme">Firme</a></li>
+                <li><a href="#reporti">Reporti</a></li>
+                <li><a href="#radnici">Radnici</a></li>
+                <li><a href="#grafovi">Grafovi</a></li>
+            </ul>
+            <div id="main">  
+                <div id="tabsinner">
+                    <ul>
+                        <li><a href="#danas">Danas</a></li>
+                        <li><a href="#sedmica">Ove sedmice</a></li>
+                        <li><a href="#kalendar">Kalendar</a></li>
+                        <li><a href="#reporti2">Reporti</a></li>
+                    </ul>	        	
+                    <div id="danas">
+                        <p style="display:inline-block;">Danas je &nbsp;</p><p id="date" style="display:inline-block;"></p>
+                        <div>
+                            <p style="display:inline-block;">Na poslu danas</p>
+                            <button id="update" style="display:inline-block;">refresh</button>	
+                        </div>       			
+                        <p id="naposlu"></p>
+                    </div>     		
+                    <div id="sedmica">
+                        <!-- <p>Ove sedmice</p> -->
+                        <div id="sedmicaButtons">
+                            <input type="radio" id="radio1" name="pon" checked="checked"/><label for="radio1">Pon</label>
+                            <input type="radio" id="radio2" name="uto"/><label for="radio2">Uto</label>
+                            <input type="radio" id="radio3" name="sri" /><label for="radio3">Sri</label>
+                            <input type="radio" id="radio4" name="cet" /><label for="radio4">Cet</label>
+                            <input type="radio" id="radio5" name="pet" /><label for="radio5">Pet</label>
+                        </div>
+                    </div> <!-- kraj sedmice -->
+                    <div id="kalendar">
+                        <p>Izaberi mjesec/dan</p>
+                    </div> <!-- kraj kalendara -->
+                    <div id="reporti2">
+                        <p>Individualno</p>
+                        <p>Firme</p>
+                        <label for="mjesecReporta">Isprintaj report za mjesec</label>
+                        <select name="mjesecReporta" id="mjesecReportaUser" style="display:data-inline"></select>
+                        <button id="userReport">Report</button>
+                        <div id="userResult">
+                            <!--<h3>Na poslu</h3>
+                            <div>
+                                <p id="worked"></p>
+                            </div>
+                            <h3>Nije odlogovan</h3>
+                            <div>
+                                <p id="notLoggedOut"></p>
+                            </div>
+                            <h3>Nije radio</h3>
+                            <div>
+                                <p id="notWorked"></p>
+                            </div>
+                            -->
+                        </div> <!-- kraj userReport accordian -->
+                    </div> <!-- kraj reporti -->
+                </div> <!-- kraj tabas inner -->
+            </div> <!-- kraj main page -->
+            <div id="reporti">
+                <div style="margin-bottom:10px;">
+                    <p style="display:data-inline">Reporti za firme</p>
+                    <label for="listafirmi1" style="display:data-inline">Izaberi firmu</label>
+                    <select id="listafirmi1" name="listafirmi1"></select>	
+                </div> 	
+                <label for="mjesecReporta">Isprintaj report za mjesec</label><select name="mjesecReporta" id="mjesecReporta" style="display:data-inline"></select>
+                <button id="dajReport">Check</button>
+                <button id="dajPdf">PDF</button>
+                <div id="firmeReport"></div>
+            </div>
 
-       <div id="radnici">Consectetur, exercitationem, vero nesciunt ab neque et voluptates vel tempore dolores vitae? Saepe, ratione, beatae, dolores ut consectetur maxime laboriosam mollitia voluptates esse qui explicabo facere incidunt debitis quaerat blanditiis.</div>
-       <div id="grafovi">Ipsa, amet, nisi, labore cupiditate provident sequi ut recusandae eius eum dolorum nulla facilis vitae dolore aperiam ratione corporis odio consequuntur reiciendis unde quos sit ea voluptatibus modi? Hic, sit!</div>
-     <div id="firme">
-      <div>
-        <label style="" for="novafirma">Dodaj firmu, ime:</label>
-        <input type="text" name="novafirma" style="margin-top:5px;margin-bottom:5px;">
-        <br>
-        <label style="" for="satnica">Cjena po satu</label>
-        <input type="numeric" id="satnica" name="satnica" style="margin-top:5px;margin-bottom:5px;">
-        <br>
-        <label style="" for="minutnica">Cjena po minuti</label>
-        <input type="numeric" id="minutnica" name="minutnica" style="margin-top:5px;margin-bottom:5px;">
-        <button id="dodajFirmu">Update</button>
-        <!--display:inline-block; -->
-      </div>
-      <div>
-        <p>Lista firmi</p>
-        <div id="listafirmi"></div>
-      </div>
-        
-     </div>
-       </div>
+            <div id="radnici">Consectetur, exercitationem, vero nesciunt ab neque et voluptates vel tempore dolores vitae? Saepe, ratione, beatae, dolores ut consectetur maxime laboriosam mollitia voluptates esse qui explicabo facere incidunt debitis quaerat blanditiis.</div>
+            <div id="grafovi">Ipsa, amet, nisi, labore cupiditate provident sequi ut recusandae eius eum dolorum nulla facilis vitae dolore aperiam ratione corporis odio consequuntur reiciendis unde quos sit ea voluptatibus modi? Hic, sit!</div>
+            <div id="firme">
+                <div>
+                    <label style="" for="novafirma">Dodaj firmu, ime:</label>
+                    <input type="text" name="novafirma" style="margin-top:5px;margin-bottom:5px;">
+                    <br>
+                    <label style="" for="satnica">Cjena po satu</label>
+                    <input type="numeric" id="satnica" name="satnica" style="margin-top:5px;margin-bottom:5px;">
+                    <br>
+                    <label style="" for="minutnica">Cjena po minuti</label>
+                    <input type="numeric" id="minutnica" name="minutnica" style="margin-top:5px;margin-bottom:5px;">
+                    <button id="dodajFirmu">Update</button>
+                    <!--display:inline-block; -->
+                </div>
+                <div>
+                    <p>Lista firmi</p>
+                    <div id="listafirmi"></div>
+                </div>
+
+            </div>
+        </div>
     </body>
     <script src="js/jquery.js"></script>
-	<script src="js/jqueryui.js"></script>
-	<script>		
-    function ajaxRequest(datA,options){
-      console.log(datA);
-      $.ajax({
-        url:'process.php',
-        data:datA,
-        type:'POST',
-        dataType:'json',
-      }).done(function(data){
-          handleData(data,options);
-      });
-    }
-    function handleData(data,options){
-      if(options=='kolkoNaPoslu'){
-        console.log(data.status);
-        var html = '<ul>';
-        $.each(data.users,function(index,value){
-          //console.log(index);
-          //console.log(val);
-          html+= '<li>'+value+' vrijeme na poslu '+data.times[index]+data.status[index]+'</li>';
-        });
-        html+= '</ul>'  
-        //$("#naposlu").html(html).fadeIn('slow');
-	$("#naposlu").html(html).fadeTo('slow',1.0);
-      }          
-    if(options=='listafirmi'){
-        console.log(data);
-        var html = '';
-        button = '<button role="firmaDelete" style="margin-left:5px;">Delete</button>'
-        $.each(data,function(index,value){
-          html+='<li>'+value+button+'</li>';
-        });
-        $("#listafirmi").html(html);
-        $("button[role=firmaDelete]").each(function(){
-            $(this).button({icons:{primary:"ui-icon-gear"}})
-            $(this).on('click',function(){
-            var firma = $(this).parent().text();
-            firma = firma.replace('Delete',"");
-            var data = 'action=deleteFirm&firma='+firma;
-            console.log(data);
-            ajaxRequest(data,'deleteFirm');
+    <script src="js/jqueryui.js"></script>
+    <script>		
+        function ajaxRequest(datA,options){
+            console.log(datA);
+            $.ajax({
+                url:'process.php',
+                data:datA,
+                type:'POST',
+                dataType:'json',
+                }).done(function(data){
+                handleData(data,options);
             });
-        });
-	}
-    if(options=='listafirmiR'){
-        console.log(data);
-        var html = '';
-        $.each(data,function(index,value){
-        html+='<option>'+value+'</option>';
-        });
-        $("#listafirmi1").html(html);
         }
-  if(options=='pdfReport'){
-        console.log(data.firma);
-        var html = '<ul>';
-        $.each(data.vrijeme,function(index,value){
-        html+='<li>'+value+'</li>';
-        });
-        html += '</ul>';
-        if(data.kolko != '')
-            html += 'ukupno '+data.kolko;
-            html += 'cjena '+data.ukupno;
-        $("#firmeReport").html(html);
-        }
-    if(options=='deleteFirm'){
-        console.log(data.status);
-        console.log(data.firm);
-        console.log('recievd data');
-    }
-    if(options=='makePdf'){
-        console.log(data);
-    }
-    function recursive(data,i){
-        //console.log(i);
-        $.each(data,function(ii,data2){
-            //console.log(data2);
-            if(typeof data2 === "object"){
-                recursive(data2,i+1);
+        function handleData(data,options){
+            if(options=='kolkoNaPoslu'){
+                console.log(data.status);
+                var html = '<ul>';
+                    $.each(data.users,function(index,value){
+                        //console.log(index);
+                        //console.log(val);
+                        html+= '<li>'+value+' vrijeme na poslu '+data.times[index]+data.status[index]+'</li>';
+                    });
+                    html+= '</ul>';
+                //$("#naposlu").html(html).fadeIn('slow');
+                $("#naposlu").html(html).fadeTo('slow',1.0);
+            }          
+            if(options=='listafirmi'){
+                console.log(data);
+                var html = '';
+                button = '<button role="firmaDelete" style="margin-left:5px;">Delete</button>';
+                $.each(data,function(index,value){
+                    html+='<li>'+value+button+'</li>';
+                });
+                $("#listafirmi").html(html);
+                $("button[role=firmaDelete]").each(function(){
+                    $(this).button({icons:{primary:"ui-icon-gear"}});
+                    $(this).on('click',function(){
+                        var firma = $(this).parent().text();
+                        firma = firma.replace('Delete',"");
+                        var data = 'action=deleteFirm&firma='+firma;
+                        console.log(data);
+                        ajaxRequest(data,'deleteFirm');
+                    });
+                });
+            }
+            if(options=='listafirmiR'){
+                console.log(data);
+                var html = '';
+                $.each(data,function(index,value){
+                    html+='<option>'+value+'</option>';
+                });
+                $("#listafirmi1").html(html);
+            }
+            if(options=='pdfReport'){
+                console.log(data.firma);
+                var html = '<ul>';
+                    $.each(data.vrijeme,function(index,value){
+                        html+='<li>'+value+'</li>';
+                    });
+                    html += '</ul>';
+                if(data.kolko != '')
+                html += 'ukupno '+data.kolko;
+                html += 'cjena '+data.ukupno;
+                $("#firmeReport").html(html);
+            }
+            if(options=='deleteFirm'){
+                console.log(data.status);
+                console.log(data.firm);
+                console.log('recievd data');
+            }
+            if(options=='makePdf'){
+                console.log(data);
+            }
+            function recursive(data,i){
+                //console.log(i);
+                $.each(data,function(ii,data2){
+                    //console.log(data2);
+                    if(typeof data2 === "object"){
+                        recursive(data2,i+1);
+                    }
+                    else{
+                        if(data2.user){
+                            console.log(user);
+                        }
+                        if(data2.action){
+                            console.log(data2.action);
+                        }
+                        if(data2.hours){
+                            //console.log(hours);
+                        }
+                        //console.log(data2);
+                    }
+                });
+            }
+            if(options=="userReport"){
+                //console.log(data.logs.length);
+                var logs = $.parseJSON(data.logs);
+                //console.log(logs);
+                var numOfUsers = logs.length;
+                for(var i=0;i<numOfUsers;i++){
+                    //console.log(logs[i][0].user);
+                    var userHtml = '<div class="user">';
+                    var userName = logs[i][0].user;
+                    userHtml += "<h3>"+userName+"</h3>";
+                    var worked = '<div id="worked"><ul>';
+                    var notWorked = '<div id="notWorked"><ul>';
+                    var notLoggedOut = '<div id="notLogOut"><ul>';
+                    var nWorked = logs[i][0].worked.length;
+                    var nNotWorked = logs[i][0].notWorked.length;
+                    var nNloggedOut = logs[i][0].notLoggedOut.length;
+                    for(var j=0;j<nWorked;j++){
+                        worked += '<li>'+logs[i][0].worked[j].hours+'</li>';
+                        worked += '<p>work log'+logs[i][0].worked[j].workedOn+'</p>';
+                        //console.log(d[i][0].worked[j].hours);
+                    }
+                    for(var j=0;j<nNotWorked;j++){
+                        notWorked += '<li>'+logs[i][0].notWorked[j].hours+'</li>';
+                    }
+                    for(var j=0;j<nNloggedOut;j++){
+                        notLoggedOut += '<li>'+logs[i][0].notLoggedOut[j].hours+'</li>';
+                    }
+                    worked += '</ul></div>';
+                    notWorked += '</ul></div>';
+                    notLoggedOut += '</ul></div>';
+                    userHtml += worked;
+                    userHtml += notWorked;
+                    userHtml += notLoggedOut;
+                    userHtml+='</div>';
+                    $("#userResult").append(userHtml);
+                }
+                //console.log(worked);
+                //$("#worked").html(worked);
+                //$("#notWorked").html(notWorked);
+                //$("#notLoggedOut").html(notLoggedOut);
+                //$("#userResult").accordion('destroy').accordion().toggle(true);
+                $(".user div").toggle(false);
+                $("#userResult").toggle(true);
             }
             else{
-                if(data2.user){
-                    console.log(user);
+                console.log(data.status);
+            }
+        }
+        function reportiZaFirme(){
+            ajaxRequest('action=listaFirmi','listafirmiR');
+        }
+        function listaFirmi(){
+            ajaxRequest('action=listaFirmi','listafirmi');
+        }
+        function kolkoNaPoslu(){    
+            ajaxRequest('action=kolkonaposlu','kolkoNaPoslu');      
+        }
+        function userReport(){
+            /*var firma = $("#listafirmi1 option:selected").text();*/
+            var mjesec = $("#mjesecReportaUser option:selected").text();
+            var data = 'action=userReport'+'&mjesec='+mjesec;
+            console.log(data);
+            ajaxRequest(data,'userReport');
+        }
+        function makePdf(){
+            var firma = $("#listafirmi1 option:selected").text();
+            var mjesec = $("#mjesecReporta option:selected").text();
+            var data = 'action=makePdf'+'&mjesec='+mjesec+'&firma='+firma;
+            ajaxRequest(data,'makePdf');
+        }
+        function pdfReport(){
+            var firma = $("#listafirmi1 option:selected").text();
+            var mjesec = $("#mjesecReporta option:selected").text();
+            var data = 'action=pdfReport'+'&mjesec='+mjesec+'&firma='+firma;
+            console.log(data);
+            //return false;
+            ajaxRequest(data,'pdfReport');
+
+        }
+        function dodajFirmu(){
+            var data = '';
+            var firma = $("input[name=novafirma]").val();
+            var satnica = $("#satnica").val();
+            var minutnica = $("#minutnica").val();
+            data+='firma='+firma+'&action=dodajFirmu';
+            data+='&satnica='+satnica+'&minutnica='+minutnica;
+            ajaxRequest(data);
+        }
+        $(function(){
+            $.mjeseci = ['Januar','Februar','Mart','April','Maj','Juni','Juli','August','Septembar','Oktobar','Novembar','Decembar'];
+            $("#tabs").tabs();
+            $("#tabsinner").tabs();
+            $("#sedmicaButtons").buttonset();
+            $("body").css('background','black');
+            kolkoNaPoslu();
+            //listaFirmi();
+            $("#dajReport, #update, #dodajFirmu, #dajPdf, #userReport").button({icons:{primary:"ui-icon-gear"}});
+            $("#dajPdf").toggle(false);
+            $("#userResult").accordion().toggle(false);
+            var date = $.datepicker.formatDate("DD, d MM,yy", new Date());
+            $("#date").text(date);
+        });
+        $("button[role=firmaDelete]").on('click',function(){
+            console.log("yayh");
+            var firma = $(this).parrent().text();
+            console.log(firma);
+        });
+        $("#update").on('click',function(){
+            //console.log();
+            $("#naposlu").fadeTo('slow',0.0,kolkoNaPoslu);
+            //kolkoNaPoslu();
+        });
+        $("#dodajFirmu").on('click',function(){
+            //console.log();
+            dodajFirmu();
+        });
+        $("#dajReport").on('click',function(){
+            //console.log();
+            $("#dajPdf").toggle(true);
+            pdfReport();
+        });
+        $("#dajPdf").on('click',function(){
+            //console.log();
+            makePdf();
+        });
+        $("#userReport").on('click',function(){
+            //console.log();
+            userReport();
+        });
+
+        $("#tabs").on('tabsactivate',function(event,ui){
+            //console.log(event);
+            //console.log(ui.newTab[0].textContent);
+            var tabName = ui.newTab[0].textContent;
+            if (tabName == 'Firme')
+            listaFirmi();
+            if (tabName == 'Reporti'){
+                reportiZaFirme();
+                var html = "";
+                var limit = (new Date()).getMonth();
+                for(var i=0;i<=limit;i++){
+                    html += '<option>'+ $.mjeseci[i]+'</option>';	
                 }
-                if(data2.action){
-                    console.log(data2.action);
-                }
-                if(data2.hours){
-                    //console.log(hours);
-                }
-                //console.log(data2);
+                $("#mjesecReporta").html(html);
             }
         });
-    }
-    if(options=='userReport'){
-        //console.log(data.logs.length);
-        var logs = $.parseJSON(data.logs);
-        //console.log(logs);
-        var worked = '<ul>';
-        var notWorked = '<ul>';
-        var notLoggedOut = '<ul>';
-        var numOfUsers = logs.length;
-        for(var i=0;i<numOfUsers;i++){
-            console.log(logs[i][0].user);
-            worked += '<li>'+logs[i][0].user+'</li>';
-            var nWorked = logs[i][0].worked.length;
-            var nNotWorked = logs[i][0].notWorked.length;
-            var nNloggedOut = logs[i][0].notLoggedOut.length;
-            for(var j=0;j<nWorked;j++){
-                worked += '<li>'+logs[i][0].worked[j].hours+'</li>';
-                worked += '<p>work log'+logs[i][0].worked[j].workedOn+'</p>';
-                //console.log(d[i][0].worked[j].hours);
+        $("#tabsinner").on('tabsactivate',function(event,ui){
+            var tabName = ui.newTab[0].textContent;
+            if(tabName == 'Reporti'){
+                var html = "";
+                var limit = (new Date()).getMonth();
+                for(var i=0;i<=limit;i++){
+                    html += '<option>'+ $.mjeseci[i]+'</option>';	
+                }
+                $("#mjesecReportaUser").html(html);
             }
-            for(var j=0;j<nNotWorked;j++){
-                notWorked += '<li>'+logs[i][0].notWorked[j].hours+'</li>';
-            }
-            for(var j=0;j<nNloggedOut;j++){
-                notLoggedOut += '<li>'+logs[i][0].notLoggedOut[j].hours+'</li>';
-            }
-        }
-        worked += '</ul>';
-        notWorked += '</ul>';
-        notLoggedOut += '</ul>';
-        console.log(worked);
-        //$("#worked").html(worked);
-        //$("#notWorked").html(notWorked);
-        //$("#notLoggedOut").html(notLoggedOut);
-        //$("#userResult").accordion('destroy').accordion().toggle(true);
-    }
-  else{
-        console.log(data.status);
-      }
-    }
-    function reportiZaFirme(){
-      ajaxRequest('action=listaFirmi','listafirmiR');
-    }
-    function listaFirmi(){
-      ajaxRequest('action=listaFirmi','listafirmi');
-    }
-    function kolkoNaPoslu(){    
-      ajaxRequest('action=kolkonaposlu','kolkoNaPoslu');      
-    }
-    function userReport(){
-        /*var firma = $("#listafirmi1 option:selected").text();*/
-        var mjesec = $("#mjesecReportaUser option:selected").text();
-        var data = 'action=userReport'+'&mjesec='+mjesec;
-        console.log(data);
-        ajaxRequest(data,'userReport');
-    }
-    function makePdf(){
-        var firma = $("#listafirmi1 option:selected").text();
-        var mjesec = $("#mjesecReporta option:selected").text();
-        var data = 'action=makePdf'+'&mjesec='+mjesec+'&firma='+firma;
-        ajaxRequest(data,'makePdf');
-    }
-    function pdfReport(){
-        var firma = $("#listafirmi1 option:selected").text();
-        var mjesec = $("#mjesecReporta option:selected").text();
-        var data = 'action=pdfReport'+'&mjesec='+mjesec+'&firma='+firma;
-        console.log(data);
-        //return false;
-        ajaxRequest(data,'pdfReport');
-
-    }
-    function dodajFirmu(){
-      var data = '';
-      var firma = $("input[name=novafirma]").val();
-      var satnica = $("#satnica").val();
-      var minutnica = $("#minutnica").val();
-      data+='firma='+firma+'&action=dodajFirmu';
-      data+='&satnica='+satnica+'&minutnica='+minutnica;
-      ajaxRequest(data);
-    }
-    $(function(){
-	$.mjeseci = ['Januar','Februar','Mart','April','Maj','Juni','Juli','August','Septembar','Oktobar','Novembar','Decembar'];
-	$("#tabs").tabs();
-	$("#tabsinner").tabs();
-	$("#sedmicaButtons").buttonset();
-	$("body").css('background','black');
-	kolkoNaPoslu();
-      //listaFirmi();
-      $("#dajReport, #update, #dodajFirmu, #dajPdf, #userReport").button({icons:{primary:"ui-icon-gear"}});
-      $("#dajPdf").toggle(false);
-      $("#userResult").accordion().toggle(false);
-	var date = $.datepicker.formatDate("DD, d MM,yy", new Date());
-	$("#date").text(date);
-	});
-	$("button[role=firmaDelete]").on('click',function(){
-		console.log("yayh");
-        var firma = $(this).parrent().text();
-        console.log(firma);
-		});
-	$("#update").on('click',function(){
-		//console.log();
-		$("#naposlu").fadeTo('slow',0.0,kolkoNaPoslu);
-		//kolkoNaPoslu();
-		});
-    $("#dodajFirmu").on('click',function(){
-      //console.log();
-      dodajFirmu();
-      });
-    $("#dajReport").on('click',function(){
-      //console.log();
-      $("#dajPdf").toggle(true);
-      pdfReport();
-    });
-    $("#dajPdf").on('click',function(){
-      //console.log();
-      makePdf();
-    });
-    $("#userReport").on('click',function(){
-      //console.log();
-      userReport();
-    });
-
-    $("#tabs").on('tabsactivate',function(event,ui){
-		  //console.log(event);
-		  //console.log(ui.newTab[0].textContent);
-		  var tabName = ui.newTab[0].textContent;
-		if (tabName == 'Firme')
-			listaFirmi();
-		if (tabName == 'Reporti'){
-			reportiZaFirme();
-			var html = "";
-			var limit = (new Date()).getMonth();
-			for(var i=0;i<=limit;i++){
-				html += '<option>'+ $.mjeseci[i]+'</option>';	
-			}
-		$("#mjesecReporta").html(html);
-		}
-    });
-    $("#tabsinner").on('tabsactivate',function(event,ui){
-        var tabName = ui.newTab[0].textContent;
-        if(tabName == 'Reporti'){
-			var html = "";
-			var limit = (new Date()).getMonth();
-			for(var i=0;i<=limit;i++){
-				html += '<option>'+ $.mjeseci[i]+'</option>';	
-			}
-		$("#mjesecReportaUser").html(html);
-        }
-    });
-	</script>
+        });
+        $("body").on('click','.user',function(id){
+            //console.log(id);
+            $(this).children('div').toggle();
+        });
+    </script>
 </html>
