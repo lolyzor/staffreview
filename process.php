@@ -133,9 +133,11 @@ function userReport(){
                 $ended = $cursor->getNext();
                 $diff = new DateTime($started['fulltime']);
                 $diff2 = new DateTime($ended['fulltime']);
-                $workedOn = $ended['workedOn'];
                 $hours = $diff->diff($diff2);
-                array_push($worked,['day'=>$started['day'],'month'=>$started['month'],'hours'=>$hours->h,'workedOn'=>$workedOn]);
+                if(isset($ended['workedOn']))
+                    array_push($worked,['day'=>$started['day'],'month'=>$started['month'],'hours'=>$hours->h,'workedOn'=>$ended['workedOn']]);
+                else
+                    array_push($worked,['day'=>$started['day'],'month'=>$started['month'],'hours'=>$hours->h,'workedOn'=>'no log available']);
             }
             else{
                 array_push($notWorked,['day'=>$i,'month'=>$month,'hours'=>'nije bio na poslu']);
