@@ -137,7 +137,7 @@ function userReport(){
                 if(isset($ended['workedOn']))
                     array_push($worked,['day'=>$started['day'],'month'=>$started['month'],'hours'=>$hours->h,'workedOn'=>$ended['workedOn']]);
                 else
-                    array_push($worked,['day'=>$started['day'],'month'=>$started['month'],'hours'=>$hours->h,'workedOn'=>'no log available']);
+                    array_push($worked,['day'=>$started['day'],'month'=>$started['month'],'hours'=>$hours->h,'workedOn'=>'nema loga']);
             }
             else{
                 array_push($notWorked,['day'=>$i,'month'=>$month,'hours'=>'nije bio na poslu']);
