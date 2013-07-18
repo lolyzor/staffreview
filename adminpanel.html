@@ -210,27 +210,38 @@
                 var logs = $.parseJSON(data.logs);
                 //console.log(logs);
                 var numOfUsers = logs.length;
+                $("#userResult").html('');
                 for(var i=0;i<numOfUsers;i++){
                     //console.log(logs[i][0].user);
                     var userHtml = '<div class="user">';
                     var userName = logs[i][0].user;
+                    var layerOne = '<div class="layerOne">';
                     userHtml += "<h3>"+userName+"</h3>";
-                    var worked = '<div id="worked"><ul>';
-                    var notWorked = '<div id="notWorked"><ul>';
-                    var notLoggedOut = '<div id="notLogOut"><ul>';
+                    var worked = '<div id="worked"><h5>Dani kad je radio</h5><ul>';
+                    var notWorked = '<div id="notWorked"><h5>Dani kad nije radio</h5><ul>';
+                    var notLoggedOut = '<div id="notLogOut"><h5>Dani kad se nije odlogovo</h5><ul>';
                     var nWorked = logs[i][0].worked.length;
                     var nNotWorked = logs[i][0].notWorked.length;
                     var nNloggedOut = logs[i][0].notLoggedOut.length;
                     for(var j=0;j<nWorked;j++){
-                        worked += '<li>'+logs[i][0].worked[j].hours+'</li>';
-                        worked += '<p>work log'+logs[i][0].worked[j].workedOn+'</p>';
+                        worked += '<ul>';
+                        worked += '<li>Dan '+logs[i][0].worked[j].day+'</li>';
+                        worked += '<li>Sati '+logs[i][0].worked[j].hours+'</li>';
+                        worked += '<li>Radio na "'+logs[i][0].worked[j].workedOn+'"</li>';
+                        worked += '</ul>';
                         //console.log(d[i][0].worked[j].hours);
                     }
                     for(var j=0;j<nNotWorked;j++){
+                        notWorked += '<ul>';
+                        notWorked += '<li>Dan '+logs[i][0].notWorked[j].day+'</li>';
                         notWorked += '<li>'+logs[i][0].notWorked[j].hours+'</li>';
+                        notWorked += '</ul>';
                     }
                     for(var j=0;j<nNloggedOut;j++){
-                        notLoggedOut += '<li>'+logs[i][0].notLoggedOut[j].hours+'</li>';
+                        notLoggedOut += '<ul>';
+                        notLoggedOut += '<li>Dan '+logs[i][0].notLoggedOut[j].day+'</li>';
+                        notLoggedOut += '<li>Poceo dan u '+logs[i][0].notLoggedOut[j].hours+'</li>';
+                        notLoggedOut += '</ul>';
                     }
                     worked += '</ul></div>';
                     notWorked += '</ul></div>';
@@ -363,8 +374,19 @@
             }
         });
         $("body").on('click','.user',function(id){
-            //console.log(id);
-            $(this).children('div').toggle();
+            //console.log(id.target.nodeName);
+            //console.log($(id.target));
+            //console.log(id.currentTarget);
+            if(id.target.nodeName == 'H3'){
+                $(this).children('div').toggle().children('ul').toggle();
+            }
+            if(id.target.nodeName == 'H5'){
+                //console.log($(id.target).parent().attr('id'));
+                $(id.target).parent().children('ul').toggle();;
+            }
+            else{
+                console.log(id.target);
+            }
         });
     </script>
 </html>
