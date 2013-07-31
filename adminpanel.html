@@ -227,7 +227,7 @@
                         worked += '<ul>';
                         worked += '<li>Dan '+logs[i][0].worked[j].day+'</li>';
                         worked += '<li>Sati '+logs[i][0].worked[j].hours+'</li>';
-                        worked += '<li>Radio na "'+logs[i][0].worked[j].workedOn+'"</li>';
+                        worked += '<li>Radio na '+logs[i][0].worked[j].workedOn+'</li>';
                         worked += '</ul>';
                         //console.log(d[i][0].worked[j].hours);
                     }
@@ -235,13 +235,13 @@
                         notWorked += '<ul>';
                         notWorked += '<li>Dan '+logs[i][0].notWorked[j].day+'</li>';
                         notWorked += '<li>'+logs[i][0].notWorked[j].hours+'</li>';
-                        notWorked += '</ul>';
+                        notWorked += '<ul>';
                     }
                     for(var j=0;j<nNloggedOut;j++){
                         notLoggedOut += '<ul>';
                         notLoggedOut += '<li>Dan '+logs[i][0].notLoggedOut[j].day+'</li>';
                         notLoggedOut += '<li>Poceo dan u '+logs[i][0].notLoggedOut[j].hours+'</li>';
-                        notLoggedOut += '</ul>';
+                        notLoggedOut += '<ul>';
                     }
                     worked += '</ul></div>';
                     notWorked += '</ul></div>';
